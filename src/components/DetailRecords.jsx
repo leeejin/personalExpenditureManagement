@@ -57,10 +57,12 @@ function DetailRecords() {
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    const deleteData = localData.filter((data) => data.id !== recordId);
-    localStorage.setItem("data", JSON.stringify(deleteData));
-    alert("삭제완료되었습니다");
-    navigate("/");
+    if (confirm("삭제하시겠습니까?")) {
+      const deleteData = localData.filter((data) => data.id !== recordId);
+      localStorage.setItem("data", JSON.stringify(deleteData));
+      alert("삭제완료되었습니다");
+      navigate("/");
+    }
   };
   /** 뒤로가기함수 */
   const handleBack = () => {
