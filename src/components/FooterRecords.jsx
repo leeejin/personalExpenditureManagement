@@ -41,12 +41,13 @@ const Font = styled.span`
 `;
 
 function FooterRecords({ filteredData }) {
-  console.log(filteredData);
   const navigate = useNavigate();
+
   const handleGoDetail = (recordId) => {
+    const data = filteredData.filter((data) => data.id === recordId);
     navigate(`/records/${recordId}`, {
       state: {
-        filteredData,
+        data,
         recordId,
       },
     });
@@ -61,15 +62,15 @@ function FooterRecords({ filteredData }) {
                 {data.date}
               </Font>
               <Font size={"16px"} color={"var(--blue-color)"} weight={"bold"}>
-                {data.category}-
-                {data.content.length > 42
-                  ? data.content.slice(0, 43) + "..."
-                  : data.content}
+                {data.item}-
+                {data.description.length > 42
+                  ? data.description.slice(0, 43) + "..."
+                  : data.description}
               </Font>
             </CardItem>
 
             <Font size={"16px"} color={"var(--blue-color)"} weight={"bold"}>
-              {data.cost.toLocaleString()} 원
+              {data.amount.toLocaleString()} 원
             </Font>
           </Card>
         ))

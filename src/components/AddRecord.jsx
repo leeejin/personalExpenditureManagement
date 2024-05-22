@@ -18,55 +18,70 @@ const Button = styled.button`
     background-color: var(--darkblue-color);
   }
 `;
-function AddRecord() {
+
+function AddRecord({ expenditureData, setExpenditureData }) {
   const handleSubmit = () => {
+    console.log("저장버튼 누름!");
     const formData = {
+      id: crypto.randomUUID(),
       date: document.getElementById("date").value,
-      category: document.getElementById("category").value,
-      cost: document.getElementById("cost").value,
-      content: document.getElementById("content").value,
+      item: document.getElementById("item").value,
+      amount: parseInt(document.getElementById("amount").value),
+      description: document.getElementById("description").value,
     };
     const error = {
-      date: `${formData.date.slice(0, 4)}-${formData.date.slice(
+      date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
         5,
         7
-      )}-${formData.date.slice(9)}`,
-      category: !formData.category.length,
-      cost: formData.cost <= 0,
-      content: !formData.content.length,
+      )}-${formData.date.slice(8)}`,
+      item: !formData.item.length,
+      amount: formData.amount <= 0,
+      description: !formData.description.length,
     };
-    if (!(error.date || error.category || error.cost || error.content))
-      console.log(formData);
+    if (error.date || error.item || error.amount || error.description) {
+      if (error.date) {
+        alert("날짜형식이 잘못되었습니다");
+      } else if (error.item) {
+        alert("항목을 입력해주세요");
+      } else if (error.amount) {
+        alert("금액은 양수로 입력해주세요");
+      } else if (error.description) {
+        alert("내용을 입력해주세요");
+      }
+      return;
+    }
+    setExpenditureData((prev) => [...prev, formData]);
+    const newData = [...expenditureData, formData];
+    localStorage.setItem("data", JSON.stringify(newData));
   };
   return (
-    <>
-      <Container>
-        <div>
-          <label htmlFor="date">날짜</label>
-          <input
-            type="text"
-            id="date"
-            placeholder="YYYY-MM-DD"
-            defaultValue="2024-01-01"
-          />
-        </div>
-        <div>
-          <label htmlFor="category">항목</label>
-          <input type="text" id="category" placeholder="지출 항목" />
-        </div>
-        <div>
-          <label htmlFor="cost">금액</label>
-          <input type="number" id="cost" placeholder="지출 금액" />
-        </div>
-        <div>
-          <label htmlFor="content">내용</label>
-          <input type="text" id="content" placeholder="지출 내용" />
-        </div>
-        <div>
-          <Button onClick={handleSubmit}>저장</Button>
-        </div>
-      </Container>
-    </>
+    <Container>
+      <div>
+        <label htmlFor="date">날짜</label>
+        <input
+          type="text"
+          id="date"
+          placeholder="YYYY-MM-DD"
+          defaultValue="2024-01-01"
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="item">항목</label>
+        <input type="text" id="item" placeholder="지출 항목" required />
+      </div>
+      <div>
+        <label htmlFor="amount">금액</label>
+        <input type="number" id="amount" placeholder="지출 금액" required />
+      </div>
+      <div>
+        <label htmlFor="description">내용</label>
+        <input type="text" id="description" placeholder="지출 내용" required />
+      </div>
+      <div>
+        <Button onClick={handleSubmit}>저장</Button>
+      </div>
+    </Container>
   );
 }
 export default AddRecord;

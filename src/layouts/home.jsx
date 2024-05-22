@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import GlobalStyle from "../styles/GlobalStyle";
 import "../styles/color.css";
-import "../styles/main.css";
+
 const Container = styled.div`
   max-width: 965px;
   margin: 0 auto;

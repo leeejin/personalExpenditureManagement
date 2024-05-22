@@ -45,12 +45,53 @@ const colors = [
   "--yellow-color",
   "--etc-color",
 ];
+
+const summarizeExpenses = (expenses) => {
+  const summary = {};
+
+  for (const expense of expenses) {
+    const { item, amount } = expense;
+
+    if (summary[item]) summary[item] += amount;
+    else summary[item] = amount;
+  }
+
+  return Object.entries(summary).map(([item, amount]) => ({
+    [item]: amount,
+  }));
+};
 function GraphRecords({ selectedMonth, filteredData }) {
-  const sortedFilteredData = filteredData.sort((a, b) => b.cost - a.cost);
-  const categoryFilteredData = sortedFilteredData;
+  const categoryFilteredData = summarizeExpenses(filteredData).sort((a, b) => {
+    return Object.values(b) - Object.values(a);
+  });
+  let arr = [];
+  for (let i = 0; i < categoryFilteredData.length; i++) {
+    if (i < 4) {
+      arr.push(categoryFilteredData[i]);
+    } else {
+      if (!arr.some((item) => item.hasOwnProperty("기타"))) {
+        arr.push({ 기타: [] });
+      }
+      arr
+        .find((item) => item.hasOwnProperty("기타"))
+        .기타.push(categoryFilteredData[i]);
+    }
+  }
   const handleTotalCost = () => {
-    const costArr = filteredData.map((data) => data.cost);
+    const costArr = filteredData.map((data) => data.amount);
     return costArr.reduce((prev, cur) => (prev += cur), 0);
+  };
+
+  const handleAmountCalculate = (data, i) => {
+    let total = 0;
+    if (i < 4) return Object.values(data);
+    else {
+      const etcData = Object.values(data)[0];
+      for (let item of etcData) {
+        total += Object.values(item)[0];
+      }
+      return total;
+    }
   };
   return (
     <>
@@ -58,22 +99,30 @@ function GraphRecords({ selectedMonth, filteredData }) {
         {selectedMonth}월 총 지출 : {handleTotalCost().toLocaleString()} 원
       </Font>
       <GraphBack>
-        {categoryFilteredData.map((data, i) => (
+        {arr.map((data, i) => (
           <GraphFront
             key={i}
             color={colors[i]}
-            width={((data.cost / handleTotalCost()) * 100).toFixed(2)}
+            width={(
+              (handleAmountCalculate(data, i) / handleTotalCost()) *
+              100
+            ).toFixed(2)}
           />
         ))}
       </GraphBack>
 
       <GraphItem>
-        {sortedFilteredData.length
-          ? sortedFilteredData.map((data, i) => (
+        {arr.length
+          ? arr.map((data, i) => (
               <GraphItem key={i}>
                 <GraphColor color={colors[i]} />
-                {data.category}: {data.cost.toLocaleString()}원 (
-                {((data.cost / handleTotalCost()) * 100).toFixed(2)}%)
+                {Object.keys(data)}:{" "}
+                {handleAmountCalculate(data, i).toLocaleString()}원 (
+                {(
+                  (handleAmountCalculate(data, i) / handleTotalCost()) *
+                  100
+                ).toFixed(2)}
+                %)
               </GraphItem>
             ))
           : null}
