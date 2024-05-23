@@ -38,7 +38,7 @@ const GraphColor = styled.div`
   height: 15px;
   background-color: var(${(props) => props.color});
 `;
-const colors = [
+const COLORS = [
   "--blue-color",
   "--green-color",
   "--red-color",
@@ -102,7 +102,7 @@ function GraphRecords({ selectedMonth, expendedDatas }) {
         {arr.map((data, i) => (
           <GraphFront
             key={i}
-            color={colors[i]}
+            color={COLORS[i]}
             width={(
               (handleAmountCalculate(data, i) / handleTotalCost()) *
               100
@@ -115,7 +115,7 @@ function GraphRecords({ selectedMonth, expendedDatas }) {
         {arr.length
           ? arr.map((data, i) => (
               <GraphItem key={i}>
-                <GraphColor color={colors[i]} />
+                <GraphColor color={COLORS[i]} />
                 {Object.keys(data)}:{" "}
                 {handleAmountCalculate(data, i).toLocaleString()}원 (
                 {(
