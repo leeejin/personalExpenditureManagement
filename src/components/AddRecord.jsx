@@ -19,9 +19,8 @@ const Button = styled.button`
   }
 `;
 
-function AddRecord({ expenditureData, setExpenditureData }) {
+function AddRecord({ expendedDatas, setExpendedDatas }) {
   const handleSubmit = () => {
-    console.log("저장버튼 누름!");
     const formData = {
       id: crypto.randomUUID(),
       date: document.getElementById("date").value,
@@ -50,8 +49,8 @@ function AddRecord({ expenditureData, setExpenditureData }) {
       }
       return;
     }
-    setExpenditureData((prev) => [...prev, formData]);
-    const newData = [...expenditureData, formData];
+    setExpendedDatas((prev) => [...prev, formData]);
+    const newData = [...expendedDatas, formData];
     localStorage.setItem("data", JSON.stringify(newData));
   };
   return (

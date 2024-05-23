@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import AddRecords from "./AddRecord";
+import AddRecord from "./AddRecord";
 import FooterRecords from "./FooterRecords";
 import GraphRecords from "./GraphRecords";
 const Section = styled.section`
@@ -27,7 +27,8 @@ const DateButton = styled.button`
     color: var(--white-color);
   }
 `;
-const months = [
+
+const MONTHS = [
   "01",
   "02",
   "03",
@@ -43,13 +44,13 @@ const months = [
 ];
 function HomeRecords() {
   const [selectedMonth, setSelectedMonth] = useState("01");
-  const [expenditureData, setExpenditureData] = useState([]);
-  const filteredData = expenditureData.filter(
+  const [expendedDatas, setExpendedDatas] = useState([]);
+  const filteredDatas = expendedDatas.filter(
     (data) => data.date.slice(5, 7) == selectedMonth
   );
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("data")) || [];
-    setExpenditureData(data);
+    setExpendedDatas(data);
   }, []);
 
   const handleChangeDate = (month) => {
@@ -59,14 +60,14 @@ function HomeRecords() {
   return (
     <>
       <Section>
-        <AddRecords
-          setExpenditureData={setExpenditureData}
-          expenditureData={expenditureData}
+        <AddRecord
+          setExpendedDatas={setExpendedDatas}
+          expendedDatas={expendedDatas}
         />
       </Section>
 
       <Section>
-        {months.map((month) => (
+        {MONTHS.map((month) => (
           <DateButton
             key={month}
             onClick={() => handleChangeDate(month)}
@@ -79,11 +80,11 @@ function HomeRecords() {
       <Section>
         <GraphRecords
           selectedMonth={selectedMonth}
-          filteredData={filteredData}
+          expendedDatas={filteredDatas}
         />
       </Section>
       <Section>
-        <FooterRecords filteredData={filteredData} />
+        <FooterRecords expendedDatas={filteredDatas} />
       </Section>
     </>
   );

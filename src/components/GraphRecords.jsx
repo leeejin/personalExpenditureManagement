@@ -60,25 +60,25 @@ const summarizeExpenses = (expenses) => {
     [item]: amount,
   }));
 };
-function GraphRecords({ selectedMonth, filteredData }) {
-  const categoryFilteredData = summarizeExpenses(filteredData).sort((a, b) => {
+function GraphRecords({ selectedMonth, expendedDatas }) {
+  const categoryDatas = summarizeExpenses(expendedDatas).sort((a, b) => {
     return Object.values(b) - Object.values(a);
   });
   let arr = [];
-  for (let i = 0; i < categoryFilteredData.length; i++) {
+  for (let i = 0; i < categoryDatas.length; i++) {
     if (i < 4) {
-      arr.push(categoryFilteredData[i]);
+      arr.push(categoryDatas[i]);
     } else {
       if (!arr.some((item) => item.hasOwnProperty("기타"))) {
         arr.push({ 기타: [] });
       }
       arr
         .find((item) => item.hasOwnProperty("기타"))
-        .기타.push(categoryFilteredData[i]);
+        .기타.push(categoryDatas[i]);
     }
   }
   const handleTotalCost = () => {
-    const costArr = filteredData.map((data) => data.amount);
+    const costArr = expendedDatas.map((data) => data.amount);
     return costArr.reduce((prev, cur) => (prev += cur), 0);
   };
 
