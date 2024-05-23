@@ -2,10 +2,10 @@ import { useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 const Button = styled.button`
-  background-color: ${(props) => props.backgroundColor};
+  background-color: ${(props) => props.color};
   color: var(--white-color);
   &:hover {
-    background-color: ${(props) => props.hoverBackgroundColor};
+    background-color: ${(props) => props.hovercolor};
   }
 `;
 const Section = styled.div`
@@ -113,22 +113,22 @@ function DetailRecords() {
         </Container>
         <Container direction="row">
           <Button
-            backgroundColor={"var(--blue-color)"}
-            hoverBackgroundColor={"var(--darkblue-color)"}
+            color={"var(--blue-color)"}
+            hovercolor={"var(--darkblue-color)"}
             onClick={handleModify}
           >
             수정
           </Button>
           <Button
-            backgroundColor={" var(--red-color)"}
-            hoverBackgroundColor={"var(--darkred-color)"}
+            color={" var(--red-color)"}
+            hovercolor={"var(--darkred-color)"}
             onClick={handleDelete}
           >
             삭제
           </Button>
           <Button
-            backgroundColor={"var(--grey-color)"}
-            hoverBackgroundColor={"var(--darkgrey-color)"}
+            color={"var(--grey-color)"}
+            hovercolor={"var(--darkgrey-color)"}
             onClick={handleBack}
           >
             뒤로가기

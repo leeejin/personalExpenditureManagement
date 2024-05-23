@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 const Container = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const Button = styled.button`
   }
 `;
 
-function AddRecord({ expendedDatas, setExpendedDatas }) {
+function AddRecord({ handleExpendDatas }) {
   const handleSubmit = () => {
     const formData = {
       id: crypto.randomUUID(),
@@ -49,9 +50,7 @@ function AddRecord({ expendedDatas, setExpendedDatas }) {
       }
       return;
     }
-    setExpendedDatas((prev) => [...prev, formData]);
-    const newData = [...expendedDatas, formData];
-    localStorage.setItem("data", JSON.stringify(newData));
+    handleExpendDatas(formData);
   };
   return (
     <Container>
@@ -83,4 +82,4 @@ function AddRecord({ expendedDatas, setExpendedDatas }) {
     </Container>
   );
 }
-export default AddRecord;
+export default React.memo(AddRecord);

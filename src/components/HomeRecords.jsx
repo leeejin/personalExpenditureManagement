@@ -56,14 +56,16 @@ function HomeRecords() {
   const handleChangeDate = (month) => {
     setSelectedMonth(month);
   };
-
+  const handleExpendDatas = (formData) => {
+    setExpendedDatas((prev) => [...prev, formData]);
+    setSelectedMonth(`${formData.date.slice(5, 7)}`);
+    const newData = [...expendedDatas, formData];
+    localStorage.setItem("data", JSON.stringify(newData));
+  };
   return (
     <>
       <Section>
-        <AddRecord
-          setExpendedDatas={setExpendedDatas}
-          expendedDatas={expendedDatas}
-        />
+        <AddRecord handleExpendDatas={handleExpendDatas} />
       </Section>
 
       <Section>
