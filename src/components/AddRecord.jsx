@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 const Container = styled.div`
   display: flex;
@@ -21,13 +21,18 @@ const Button = styled.button`
 `;
 
 function AddRecord({ handleExpendDatas }) {
+  const date = useRef("");
+  const item = useRef("");
+  const amount = useRef(0);
+  const description = useRef("");
+
   const handleSubmit = () => {
     const formData = {
       id: crypto.randomUUID(),
-      date: document.getElementById("date").value,
-      item: document.getElementById("item").value,
-      amount: parseInt(document.getElementById("amount").value),
-      description: document.getElementById("description").value,
+      date: date.current.value,
+      item: item.current.value,
+      amount: parseInt(amount.current.value),
+      description: description.current.value,
     };
     const error = {
       date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
@@ -59,6 +64,7 @@ function AddRecord({ handleExpendDatas }) {
         <input
           type="text"
           id="date"
+          ref={date}
           placeholder="YYYY-MM-DD"
           defaultValue="2024-01-01"
           required
@@ -66,15 +72,33 @@ function AddRecord({ handleExpendDatas }) {
       </div>
       <div>
         <label htmlFor="item">항목</label>
-        <input type="text" id="item" placeholder="지출 항목" required />
+        <input
+          type="text"
+          id="item"
+          ref={item}
+          placeholder="지출 항목"
+          required
+        />
       </div>
       <div>
         <label htmlFor="amount">금액</label>
-        <input type="number" id="amount" placeholder="지출 금액" required />
+        <input
+          type="number"
+          id="amount"
+          ref={amount}
+          placeholder="지출 금액"
+          required
+        />
       </div>
       <div>
         <label htmlFor="description">내용</label>
-        <input type="text" id="description" placeholder="지출 내용" required />
+        <input
+          type="text"
+          id="description"
+          ref={description}
+          placeholder="지출 내용"
+          required
+        />
       </div>
       <div>
         <Button onClick={handleSubmit}>저장</Button>

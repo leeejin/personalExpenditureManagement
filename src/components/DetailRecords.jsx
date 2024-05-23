@@ -28,23 +28,18 @@ function DetailRecords() {
   const localData = JSON.parse(localStorage.getItem("data"));
   const { data, recordId } = location.state;
   const filteredData = data.filter((data) => data.id === recordId)[0];
-  const formDataRef = useRef({
-    date: filteredData.date,
-    item: filteredData.item,
-    amount: filteredData.amount,
-    description: filteredData.description,
-  });
+  const date = useRef("");
+  const item = useRef("");
+  const amount = useRef(0);
+  const description = useRef("");
   /** 수정함수 */
   const handleModify = () => {
     //수정할 데이터
     const formData = {
-      date: (formDataRef.current.date = document.getElementById("date").value),
-      item: (formDataRef.current.item = document.getElementById("item").value),
-      amount: (formDataRef.current.amount = parseInt(
-        document.getElementById("amount").value
-      )),
-      description: (formDataRef.current.description =
-        document.getElementById("description").value),
+      ddate: date.current.value,
+      item: item.current.value,
+      amount: parseInt(amount.current.value),
+      description: description.current.value,
     };
     console.log(formData);
     const modifiedData = localData.map((data) => {
@@ -76,7 +71,7 @@ function DetailRecords() {
           <input
             type="text"
             id="date"
-            ref={formDataRef.date}
+            ref={date}
             placeholder="YYYY-MM-DD"
             defaultValue={filteredData.date}
           />
@@ -86,7 +81,7 @@ function DetailRecords() {
           <input
             type="text"
             id="item"
-            ref={formDataRef.item}
+            ref={item}
             placeholder="지출 항목"
             defaultValue={filteredData.item}
           />
@@ -96,7 +91,7 @@ function DetailRecords() {
           <input
             type="number"
             id="amount"
-            ref={formDataRef.amount}
+            ref={amount}
             placeholder="지출 금액"
             defaultValue={filteredData.amount}
           />
@@ -106,7 +101,7 @@ function DetailRecords() {
           <input
             type="text"
             id="description"
-            ref={formDataRef.description}
+            ref={description}
             placeholder="지출 내용"
             defaultValue={filteredData.description}
           />
