@@ -1,17 +1,9 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import "./App.css";
-import DetailRecords from "./pages/DetailRecords_page";
-import HomeRecords from "./pages/HomeRecords_page";
+import router from "./routes/router";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomeRecords />} />
-        <Route path="/records/:recordId" element={<DetailRecords />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

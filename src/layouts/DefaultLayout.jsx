@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import GlobalStyle from "../styles/GlobalStyle";
 import "../styles/color.css";
@@ -10,12 +11,14 @@ const Container = styled.div`
   flex-direction: column;
   gap: 25px;
 `;
-function Home({ children }) {
+function DefaultLayout() {
   return (
     <>
       <GlobalStyle />
-      <Container>{children}</Container>;
+      <Container>
+        <Outlet />
+      </Container>
     </>
   );
 }
-export default Home;
+export default DefaultLayout;

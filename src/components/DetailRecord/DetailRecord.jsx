@@ -22,12 +22,13 @@ const Container = styled.div`
   text-align: left;
 `;
 
-function DetailRecords() {
+function DetailRecord() {
   const navigate = useNavigate();
   const location = useLocation();
   const localData = JSON.parse(localStorage.getItem("data"));
   const { data, recordId } = location.state;
   const filteredData = data.filter((data) => data.id === recordId)[0];
+  console.log(filteredData);
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -36,12 +37,11 @@ function DetailRecords() {
   const handleModify = () => {
     //수정할 데이터
     const formData = {
-      ddate: date.current.value,
+      date: date.current.value,
       item: item.current.value,
       amount: parseInt(amount.current.value),
       description: description.current.value,
     };
-    console.log(formData);
     const modifiedData = localData.map((data) => {
       if (data.id === recordId) return { ...data, ...formData };
       return data;
@@ -134,4 +134,4 @@ function DetailRecords() {
   );
 }
 
-export default DetailRecords;
+export default DetailRecord;

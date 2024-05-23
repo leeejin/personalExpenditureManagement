@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import styled from "styled-components";
+import { FamilyContext } from "../../context/FamilyContext";
 const GraphItem = styled.div`
   display: flex;
   justify-content: center;
@@ -60,8 +62,10 @@ const summarizeExpenses = (expenses) => {
     [item]: amount,
   }));
 };
-function GraphRecords({ selectedMonth, expendedDatas }) {
-  const categoryDatas = summarizeExpenses(expendedDatas).sort((a, b) => {
+function GraphRecords({ filteredDatas, selectedMonth }) {
+  const datas = useContext(FamilyContext);
+
+  const categoryDatas = summarizeExpenses(datas.filteredDatas).sort((a, b) => {
     return Object.values(b) - Object.values(a);
   });
   let arr = [];
@@ -78,7 +82,7 @@ function GraphRecords({ selectedMonth, expendedDatas }) {
     }
   }
   const handleTotalCost = () => {
-    const costArr = expendedDatas.map((data) => data.amount);
+    const costArr = datas.filteredDatas.map((data) => data.amount);
     return costArr.reduce((prev, cur) => (prev += cur), 0);
   };
 
@@ -96,7 +100,8 @@ function GraphRecords({ selectedMonth, expendedDatas }) {
   return (
     <>
       <Font>
-        {selectedMonth}월 총 지출 : {handleTotalCost().toLocaleString()} 원
+        {datas.selectedMonth}월 총 지출 : {handleTotalCost().toLocaleString()}{" "}
+        원
       </Font>
       <GraphBack>
         {arr.map((data, i) => (

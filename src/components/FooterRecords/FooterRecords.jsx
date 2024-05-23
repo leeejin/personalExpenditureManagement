@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { FamilyContext } from "../../context/FamilyContext";
 const FlexContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -40,11 +42,12 @@ const Font = styled.span`
   color: ${(props) => props.color};
 `;
 
-function FooterRecords({ expendedDatas }) {
+function FooterRecords({ filteredDatas }) {
   const navigate = useNavigate();
+  const datas = useContext(FamilyContext);
 
   const handleGoDetail = (recordId) => {
-    const data = expendedDatas.filter((data) => data.id === recordId);
+    const data = datas.filteredDatas.filter((data) => data.id === recordId);
     navigate(`/records/${recordId}`, {
       state: {
         data,
@@ -54,8 +57,8 @@ function FooterRecords({ expendedDatas }) {
   };
   return (
     <FlexContainer>
-      {expendedDatas.length ? (
-        expendedDatas.map((data) => (
+      {datas.filteredDatas.length ? (
+        datas.filteredDatas.map((data) => (
           <Card key={data.id} onClick={() => handleGoDetail(data.id)}>
             <CardItem>
               <Font size={"14px"} color={"var(--grey-color)"} weight={"100"}>
