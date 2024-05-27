@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { FamilyContext } from "../../context/FamilyContext";
 import AddRecord from "../AddRecord/AddRecord";
@@ -14,14 +14,12 @@ const Section = styled.section`
 
 function HomeRecords() {
   const [selectedMonth, setSelectedMonth] = useState("01");
-  const [expendedDatas, setExpendedDatas] = useState([]);
+  const [expendedDatas, setExpendedDatas] = useState(
+    JSON.parse(localStorage.getItem("data")) || []
+  );
   const filteredDatas = expendedDatas.filter(
     (data) => data.date.slice(5, 7) == selectedMonth
   );
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("data")) || [];
-    setExpendedDatas(data);
-  }, []);
 
   const handleChangeDate = (month) => {
     setSelectedMonth(month);
@@ -33,13 +31,20 @@ function HomeRecords() {
     localStorage.setItem("data", JSON.stringify(newData));
   };
   return (
-    <FamilyContext.Provider value={{ filteredDatas, selectedMonth }}>
+    <FamilyContext.Provider
+      value={{
+        filteredDatas,
+        selectedMonth,
+        handleExpendDatas,
+        handleChangeDate,
+      }}
+    >
       <Section>
-        <AddRecord handleExpendDatas={handleExpendDatas} />
+        <AddRecord />
       </Section>
 
       <Section>
-        <MonthRecord handleChangeDate={handleChangeDate} />
+        <MonthRecord />
       </Section>
 
       <Section>

@@ -1,5 +1,6 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import styled from "styled-components";
+import { FamilyContext } from "../../context/FamilyContext";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -20,7 +21,8 @@ const Button = styled.button`
   }
 `;
 
-function AddRecord({ handleExpendDatas }) {
+function AddRecord() {
+  const datas = useContext(FamilyContext);
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -55,7 +57,7 @@ function AddRecord({ handleExpendDatas }) {
       }
       return;
     }
-    handleExpendDatas(formData);
+    datas.handleExpendDatas(formData);
   };
   return (
     <Container>

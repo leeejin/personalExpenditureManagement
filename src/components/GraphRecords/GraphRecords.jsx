@@ -62,7 +62,7 @@ const summarizeExpenses = (expenses) => {
     [item]: amount,
   }));
 };
-function GraphRecords({ filteredDatas, selectedMonth }) {
+function GraphRecords() {
   const datas = useContext(FamilyContext);
 
   const categoryDatas = summarizeExpenses(datas.filteredDatas).sort((a, b) => {

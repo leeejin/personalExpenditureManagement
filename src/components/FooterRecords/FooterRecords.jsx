@@ -42,7 +42,7 @@ const Font = styled.span`
   color: ${(props) => props.color};
 `;
 
-function FooterRecords({ filteredDatas }) {
+function FooterRecords() {
   const navigate = useNavigate();
   const datas = useContext(FamilyContext);
 

@@ -35,7 +35,7 @@ const MONTHS = [
   "11",
   "12",
 ];
-function MonthRecords({ handleChangeDate }) {
+function MonthRecords() {
   const datas = useContext(FamilyContext);
 
   return (
@@ -43,7 +43,7 @@ function MonthRecords({ handleChangeDate }) {
       {MONTHS.map((month) => (
         <DateButton
           key={month}
-          onClick={() => handleChangeDate(month)}
+          onClick={() => datas.handleChangeDate(month)}
           selected={datas.selectedMonth === month}
         >
           <FontSpan>{month}월</FontSpan>
