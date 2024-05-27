@@ -35,7 +35,7 @@ const MONTHS = [
   "11",
   "12",
 ];
-function MonthRecords({ selectedMonth, handleChangeDate }) {
+function MonthRecords({ handleChangeDate }) {
   const datas = useContext(FamilyContext);
 
   return (
