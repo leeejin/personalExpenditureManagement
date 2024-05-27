@@ -28,7 +28,7 @@ function DetailRecord() {
   const localData = JSON.parse(localStorage.getItem("data"));
   const { data, recordId } = location.state;
   const filteredData = data.filter((data) => data.id === recordId)[0];
-  console.log(filteredData);
+
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
