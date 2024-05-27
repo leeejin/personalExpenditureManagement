@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import AddRecord from "./AddRecord";
 import FooterRecords from "./FooterRecords";
@@ -10,15 +10,17 @@ const Section = styled.section`
   padding: 20px;
   text-align: center;
 `;
-const data = JSON.parse(localStorage.getItem("data")) || [];
+
 function HomeRecords() {
   const [selectedMonth, setSelectedMonth] = useState("01");
-  const [expendedDatas, setExpendedDatas] = useState(data);
-
+  const [expendedDatas, setExpendedDatas] = useState([]);
   const filteredDatas = expendedDatas.filter(
     (data) => data.date.slice(5, 7) === selectedMonth
   );
-
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem("data")) || [];
+    setExpendedDatas(data);
+  }, []);
   const handleChangeDate = (month) => {
     setSelectedMonth(month);
   };
