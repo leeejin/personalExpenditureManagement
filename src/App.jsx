@@ -1,15 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import "./App.css";
-import DetailRecords from "./pages/DetailRecords_page";
-import HomeRecords from "./pages/HomeRecords_page";
-
+import DetailRecords from "./components/DetailRecords";
+import HomeRecords from "./components/HomeRecords";
+import Layout from "./layouts/home";
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomeRecords />} />
-        <Route path="/records/:recordId" element={<DetailRecords />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<HomeRecords />} />
+          <Route path="/records/:recordId" element={<DetailRecords />} />
+        </Routes>
+      </Layout>
     </BrowserRouter>
   );
 }
