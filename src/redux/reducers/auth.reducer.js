@@ -12,6 +12,11 @@ const updatedLocalStorage = (data) => {
   localStorage.setItem("data", JSON.stringify(data));
 };
 function authReducer(prevState = initialState, action) {
+  const add = [...prevState.filteredDatas, action.payload];
+
+  const elimination = [...prevState.filteredDatas].filter(
+    (data) => data.id != action.payload
+  );
   switch (action.type) {
     case CHANGE_MONTH:
       return {
@@ -19,11 +24,11 @@ function authReducer(prevState = initialState, action) {
         selectedMonth: action.payload,
       };
     case ADD_RECORD:
-      updatedLocalStorage([...prevState.filteredDatas, action.payload]);
+      updatedLocalStorage(add);
       return {
         ...prevState,
         selectedMonth: action.payload.date.slice(5, 7),
-        filteredDatas: [...prevState.filteredDatas, action.payload],
+        filteredDatas: add,
       };
     case MODIFY_RECORD:
       updatedLocalStorage(
@@ -48,15 +53,11 @@ function authReducer(prevState = initialState, action) {
         ),
       };
     case DELETE_RECORD:
-      updatedLocalStorage(
-        [...prevState.filteredDatas].filter((data) => data.id != action.payload)
-      );
+      updatedLocalStorage(elimination);
 
       return {
         ...prevState,
-        filteredDatas: [...prevState.filteredDatas].filter(
-          (data) => data.id != action.payload
-        ),
+        filteredDatas: elimination,
       };
     default:
       return prevState;

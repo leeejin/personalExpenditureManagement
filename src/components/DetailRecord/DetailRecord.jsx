@@ -46,7 +46,10 @@ function DetailRecord() {
       amount: parseInt(amount.current.value),
       description: description.current.value,
     };
-    dispatch({ type: MODIFY_RECORD, payload: { recordId, formData } });
+    dispatch({
+      type: MODIFY_RECORD,
+      payload: { recordId, formData },
+    });
     alert("수정완료되었습니다");
     navigate("/");
   };
