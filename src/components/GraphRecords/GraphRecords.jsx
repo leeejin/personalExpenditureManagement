@@ -1,6 +1,5 @@
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { FamilyContext } from "../../context/FamilyContext";
 const GraphItem = styled.div`
   display: flex;
   justify-content: center;
@@ -62,10 +61,13 @@ const summarizeExpenses = (expenses) => {
     [item]: amount,
   }));
 };
-function GraphRecords({ filteredDatas, selectedMonth }) {
-  const datas = useContext(FamilyContext);
+function GraphRecords() {
+  const selectedMonth = useSelector((state) => state.auth.selectedMonth);
+  const filteredDatas = useSelector((state) => state.auth.filteredDatas).filter(
+    (data) => data.date.slice(5, 7) == selectedMonth
+  );
 
-  const categoryDatas = summarizeExpenses(datas.filteredDatas).sort((a, b) => {
+  const categoryDatas = summarizeExpenses(filteredDatas).sort((a, b) => {
     return Object.values(b) - Object.values(a);
   });
   let arr = [];
@@ -82,7 +84,7 @@ function GraphRecords({ filteredDatas, selectedMonth }) {
     }
   }
   const handleTotalCost = () => {
-    const costArr = datas.filteredDatas.map((data) => data.amount);
+    const costArr = filteredDatas.map((data) => data.amount);
     return costArr.reduce((prev, cur) => (prev += cur), 0);
   };
 
@@ -100,8 +102,7 @@ function GraphRecords({ filteredDatas, selectedMonth }) {
   return (
     <>
       <Font>
-        {datas.selectedMonth}월 총 지출 : {handleTotalCost().toLocaleString()}{" "}
-        원
+        {selectedMonth}월 총 지출 : {handleTotalCost().toLocaleString()} 원
       </Font>
       <GraphBack>
         {arr.map((data, i) => (

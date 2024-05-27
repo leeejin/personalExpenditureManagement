@@ -1,7 +1,6 @@
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { FamilyContext } from "../../context/FamilyContext";
 const FlexContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,12 +41,14 @@ const Font = styled.span`
   color: ${(props) => props.color};
 `;
 
-function FooterRecords({ filteredDatas }) {
+function FooterRecords() {
   const navigate = useNavigate();
-  const datas = useContext(FamilyContext);
-
+  const selectedMonth = useSelector((state) => state.auth.selectedMonth);
+  const filteredDatas = useSelector((state) => state.auth.filteredDatas).filter(
+    (data) => data.date.slice(5, 7) == selectedMonth
+  );
   const handleGoDetail = (recordId) => {
-    const data = datas.filteredDatas.filter((data) => data.id === recordId);
+    const data = filteredDatas.filter((data) => data.id === recordId);
     navigate(`/records/${recordId}`, {
       state: {
         data,
@@ -57,8 +58,8 @@ function FooterRecords({ filteredDatas }) {
   };
   return (
     <FlexContainer>
-      {datas.filteredDatas.length ? (
-        datas.filteredDatas.map((data) => (
+      {filteredDatas.length ? (
+        filteredDatas.map((data) => (
           <Card key={data.id} onClick={() => handleGoDetail(data.id)}>
             <CardItem>
               <Font size={"14px"} color={"var(--grey-color)"} weight={"100"}>

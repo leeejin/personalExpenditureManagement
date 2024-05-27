@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { ADD_RECORD } from "../../redux/reducers/auth.reducer";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -20,7 +22,8 @@ const Button = styled.button`
   }
 `;
 
-function AddRecord({ handleExpendDatas }) {
+function AddRecord() {
+  const dispatch = useDispatch();
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -55,8 +58,9 @@ function AddRecord({ handleExpendDatas }) {
       }
       return;
     }
-    handleExpendDatas(formData);
+    dispatch({ type: ADD_RECORD, payload: formData });
   };
+
   return (
     <Container>
       <div>

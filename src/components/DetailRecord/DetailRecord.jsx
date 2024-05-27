@@ -1,6 +1,11 @@
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import {
+  DELETE_RECORD,
+  MODIFY_RECORD,
+} from "../../redux/reducers/auth.reducer";
 const Button = styled.button`
   background-color: ${(props) => props.color};
   color: var(--white-color);
@@ -24,11 +29,10 @@ const Container = styled.div`
 
 function DetailRecord() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
-  const localData = JSON.parse(localStorage.getItem("data"));
   const { data, recordId } = location.state;
   const filteredData = data.filter((data) => data.id === recordId)[0];
-  console.log(filteredData);
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -42,19 +46,14 @@ function DetailRecord() {
       amount: parseInt(amount.current.value),
       description: description.current.value,
     };
-    const modifiedData = localData.map((data) => {
-      if (data.id === recordId) return { ...data, ...formData };
-      return data;
-    }, localData);
-    localStorage.setItem("data", JSON.stringify(modifiedData));
+    dispatch({ type: MODIFY_RECORD, payload: { recordId, formData } });
     alert("수정완료되었습니다");
     navigate("/");
   };
   /** 삭제함수 */
   const handleDelete = () => {
     if (confirm("삭제하시겠습니까?")) {
-      const deleteData = localData.filter((data) => data.id !== recordId);
-      localStorage.setItem("data", JSON.stringify(deleteData));
+      dispatch({ type: DELETE_RECORD, payload: recordId });
       alert("삭제완료되었습니다");
       navigate("/");
     }

@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { FamilyContext } from "../../context/FamilyContext";
+import { CHANGE_MONTH } from "../../redux/reducers/auth.reducer";
 
 const FontSpan = styled.span`
   font-size: 18px;
@@ -35,16 +35,19 @@ const MONTHS = [
   "11",
   "12",
 ];
-function MonthRecords({ selectedMonth, handleChangeDate }) {
-  const datas = useContext(FamilyContext);
-
+function MonthRecords() {
+  const selectedMonth = useSelector((state) => state.auth.selectedMonth);
+  const dispatch = useDispatch();
+  const handleChangeDate = (month) => {
+    dispatch({ type: CHANGE_MONTH, payload: month });
+  };
   return (
     <>
       {MONTHS.map((month) => (
         <DateButton
           key={month}
           onClick={() => handleChangeDate(month)}
-          selected={datas.selectedMonth === month}
+          selected={selectedMonth === month}
         >
           <FontSpan>{month}월</FontSpan>
         </DateButton>
