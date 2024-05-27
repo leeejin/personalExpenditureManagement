@@ -1,5 +1,6 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
+import Alert from "./Alert";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -21,6 +22,8 @@ const Button = styled.button`
 `;
 
 function AddRecord({ handleExpendDatas }) {
+  const [alerts, setAlerts] = useState({ isVisible: false, message: "" });
+
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -45,20 +48,46 @@ function AddRecord({ handleExpendDatas }) {
     };
     if (error.date || error.item || error.amount || error.description) {
       if (error.date) {
-        alert("날짜형식이 잘못되었습니다");
+        setAlerts((prev) => ({
+          ...prev,
+          isVisible: true,
+          message: "날짜형식이 잘못되었습니다",
+        }));
       } else if (error.item) {
-        alert("항목을 입력해주세요");
+        setAlerts((prev) => ({
+          ...prev,
+          isVisible: true,
+          message: "항목을 입력해주세요",
+        }));
       } else if (error.amount) {
-        alert("금액은 양수로 입력해주세요");
+        setAlerts((prev) => ({
+          ...prev,
+          isVisible: true,
+          message: "금액은 양수로 입력해주세요",
+        }));
       } else if (error.description) {
-        alert("내용을 입력해주세요");
+        setAlerts((prev) => ({
+          ...prev,
+          isVisible: true,
+          message: "내용을 입력해주세요",
+        }));
       }
+      setTimeout(
+        () =>
+          setAlerts((prev) => ({
+            ...prev,
+            isVisible: false,
+            message: "",
+          })),
+        1500
+      );
       return;
     }
     handleExpendDatas(formData);
   };
   return (
     <Container>
+      {alerts.isVisible && <Alert message={alerts.message} />}
       <div>
         <label htmlFor="date">날짜</label>
         <input

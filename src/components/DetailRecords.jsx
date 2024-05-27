@@ -1,6 +1,7 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Alert from "./Alert";
 const Button = styled.button`
   background-color: ${(props) => props.color};
   color: var(--white-color);
@@ -28,6 +29,8 @@ function DetailRecords() {
   const localData = JSON.parse(localStorage.getItem("data"));
   const { data, recordId } = location.state;
   const filteredData = data.filter((data) => data.id === recordId)[0];
+
+  const [alerts, setAlerts] = useState({ isVisible: false, message: "" });
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -36,12 +39,57 @@ function DetailRecords() {
   const handleModify = () => {
     //수정할 데이터
     const formData = {
-      ddate: date.current.value,
+      date: date.current.value,
       item: item.current.value,
       amount: parseInt(amount.current.value),
       description: description.current.value,
     };
-    console.log(formData);
+    const error = {
+      date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
+        5,
+        7
+      )}-${formData.date.slice(8)}`,
+      item: !formData.item.length,
+      amount: formData.amount <= 0,
+      description: !formData.description.length,
+    };
+    if (error.date || error.item || error.amount || error.description) {
+      if (error.date) {
+        setAlerts((prev) => ({
+          ...prev,
+          isVisible: true,
+          message: "날짜형식이 잘못되었습니다",
+        }));
+      } else if (error.item) {
+        setAlerts((prev) => ({
+          ...prev,
+          isVisible: true,
+          message: "항목을 입력해주세요",
+        }));
+      } else if (error.amount) {
+        setAlerts((prev) => ({
+          ...prev,
+          isVisible: true,
+          message: "금액은 양수로 입력해주세요",
+        }));
+      } else if (error.description) {
+        setAlerts((prev) => ({
+          ...prev,
+          isVisible: true,
+          message: "내용을 입력해주세요",
+        }));
+      }
+      setTimeout(
+        () =>
+          setAlerts((prev) => ({
+            ...prev,
+            isVisible: false,
+            message: "",
+          })),
+        1500
+      );
+      return;
+    }
     const modifiedData = localData.map((data) => {
       if (data.id === recordId) return { ...data, ...formData };
       return data;
@@ -65,6 +113,7 @@ function DetailRecords() {
   };
   return (
     <Section>
+      {alerts.isVisible && <Alert message={alerts.message} />}
       <Container direction="column">
         <Container direction="column">
           <label htmlFor="date">날짜</label>
