@@ -1,12 +1,13 @@
+export const CHANGE_MONTH = "ChangeMonth";
+export const ADD_RECORD = "addRecord";
+export const MODIFY_RECORD = "modifyRecord";
+export const DELETE_RECORD = "deleteRecord";
+
 const expendedDatas = JSON.parse(localStorage.getItem("data")) || [];
 const initialState = {
   selectedMonth: "01",
   filteredDatas: expendedDatas,
 };
-export const CHANGE_MONTH = "ChangeMonth";
-export const ADD_RECORD = "addRecord";
-export const MODIFY_RECORD = "modifyRecord";
-export const DELETE_RECORD = "deleteRecord";
 
 const updatedLocalStorage = (data) => {
   localStorage.setItem("data", JSON.stringify(data));
