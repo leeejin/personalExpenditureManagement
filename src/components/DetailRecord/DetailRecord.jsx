@@ -1,11 +1,18 @@
 import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   DELETE_RECORD,
   MODIFY_RECORD,
 } from "../../redux/reducers/auth.reducer";
+import { Modal_CLOSE, Modal_OPEN } from "../../redux/reducers/modal.reducer";
+import { Warning_CLOSE, Warning_OPEN } from "../../redux/reducers/popup.reducer";
+import GlobalStyle from "../../styles/GlobalStyle";
+import Modal from "../Modal";
+const DEL_MESSAGE = "삭제하시겠습니까 ?";
+const MODI_MESSAGE = "수정하시겠습니까 ?";
+
 const Button = styled.button`
   background-color: ${(props) => props.color};
   color: var(--white-color);
@@ -31,6 +38,7 @@ function DetailRecord() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const modal = useSelector((state) => state.modal);
   const { data, recordId } = location.state;
   const filteredData = data.filter((data) => data.id === recordId)[0];
   const date = useRef("");
@@ -46,27 +54,59 @@ function DetailRecord() {
       amount: parseInt(amount.current.value),
       description: description.current.value,
     };
+    const error = {
+      date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
+        5,
+        7
+      )}-${formData.date.slice(8)}`,
+      item: !formData.item.length,
+      amount: formData.amount <= 0,
+      description: !formData.description.length,
+    };
+    let message = "";
+    if (error.date || error.item || error.amount || error.description) {
+      if (error.date) message = "날짜형식이 잘못되었습니다";
+      else if (error.item) message = "항목을 입력해주세요";
+      else if (error.amount) message = "금액은 양수로 입력해주세요";
+      else if (error.description) message = "내용을 입력해주세요";
+
+      dispatch({ type: Warning_OPEN, payload: { isVisible: true, message } });
+      setTimeout(() => dispatch({ type: Warning_CLOSE }), 1500);
+      return;
+    }
+
     dispatch({
       type: MODIFY_RECORD,
       payload: { recordId, formData },
     });
-    alert("수정완료되었습니다");
+
     navigate("/");
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    if (confirm("삭제하시겠습니까?")) {
-      dispatch({ type: DELETE_RECORD, payload: recordId });
-      alert("삭제완료되었습니다");
-      navigate("/");
-    }
+    dispatch({ type: DELETE_RECORD, payload: recordId });
+    navigate("/");
   };
   /** 뒤로가기함수 */
   const handleBack = () => {
     navigate(-1);
   };
+
+  const handleConfirm = () => {
+    if (modal.message == MODI_MESSAGE) {
+      handleModify();
+    } else if (modal.message == DEL_MESSAGE) {
+      handleDelete();
+    }
+    dispatch({ type: Modal_CLOSE });
+  };
+  const handleModal = (type) => {
+    dispatch({ type: Modal_OPEN, payload: { isVisible: true, message: type } });
+  };
   return (
     <Section>
+      <GlobalStyle isModalOpen={modal.isVisible} />
+      {modal.isVisible && <Modal handleConfirm={handleConfirm} />}
       <Container direction="column">
         <Container direction="column">
           <label htmlFor="date">날짜</label>
@@ -112,14 +152,14 @@ function DetailRecord() {
           <Button
             color={"var(--blue-color)"}
             hovercolor={"var(--darkblue-color)"}
-            onClick={handleModify}
+            onClick={() => handleModal(MODI_MESSAGE)}
           >
             수정
           </Button>
           <Button
             color={" var(--red-color)"}
             hovercolor={"var(--darkred-color)"}
-            onClick={handleDelete}
+            onClick={() => handleModal(DEL_MESSAGE)}
           >
             삭제
           </Button>
