@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
+import { v4 as uuidv4 } from "uuid";
 import Alert from "./Alert";
 const Container = styled.div`
   display: flex;
@@ -22,7 +23,7 @@ const Button = styled.button`
 `;
 
 function AddRecord({ handleExpendDatas }) {
-  const [alerts, setAlerts] = useState({ isVisible: false, message: "" });
+  const [warning, setWarning] = useState({ isVisible: false, message: "" });
 
   const date = useRef("");
   const item = useRef("");
@@ -31,50 +32,35 @@ function AddRecord({ handleExpendDatas }) {
 
   const handleSubmit = () => {
     const formData = {
-      id: crypto.randomUUID(),
-      date: date.current.value,
-      item: item.current.value,
-      amount: parseInt(amount.current.value),
-      description: description.current.value,
+      id: uuidv4(),
+      date: date.current.value.trim(),
+      item: item.current.value.trim(),
+      amount: parseInt(amount.current.value.trim()),
+      description: description.current.value.trim(),
     };
     const error = {
       date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
         5,
         7
       )}-${formData.date.slice(8)}`,
-      item: !formData.item.length,
+      item: !formData.item.trim().length,
       amount: formData.amount <= 0,
-      description: !formData.description.length,
+      description: !formData.description.trim().length,
     };
+    let message = "";
     if (error.date || error.item || error.amount || error.description) {
-      if (error.date) {
-        setAlerts((prev) => ({
-          ...prev,
-          isVisible: true,
-          message: "날짜형식이 잘못되었습니다",
-        }));
-      } else if (error.item) {
-        setAlerts((prev) => ({
-          ...prev,
-          isVisible: true,
-          message: "항목을 입력해주세요",
-        }));
-      } else if (error.amount) {
-        setAlerts((prev) => ({
-          ...prev,
-          isVisible: true,
-          message: "금액은 양수로 입력해주세요",
-        }));
-      } else if (error.description) {
-        setAlerts((prev) => ({
-          ...prev,
-          isVisible: true,
-          message: "내용을 입력해주세요",
-        }));
-      }
+      if (error.date) message = "날짜형식이 잘못되었습니다";
+      else if (error.item) message = "항목을 입력해주세요";
+      else if (error.amount) message = "금액은 양수로 입력해주세요";
+      else if (error.description) message = "내용을 입력해주세요";
+      setWarning((prev) => ({
+        ...prev,
+        isVisible: true,
+        message,
+      }));
       setTimeout(
         () =>
-          setAlerts((prev) => ({
+          setWarning((prev) => ({
             ...prev,
             isVisible: false,
             message: "",
@@ -87,7 +73,7 @@ function AddRecord({ handleExpendDatas }) {
   };
   return (
     <Container>
-      {alerts.isVisible && <Alert message={alerts.message} />}
+      {warning.isVisible && <Alert message={warning.message} />}
       <div>
         <label htmlFor="date">날짜</label>
         <input
