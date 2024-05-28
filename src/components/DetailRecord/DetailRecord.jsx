@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { v4 as uuidv4 } from "uuid";
 import { deleteAuth, modifyAuth } from "../../redux/reducers/auth.reducer";
 import { modalClose, modalOpen } from "../../redux/reducers/modal.reducer";
 import { popupClose, popupOpen } from "../../redux/reducers/popup.reducer";
@@ -47,7 +46,6 @@ function DetailRecord() {
   const handleModify = () => {
     //수정할 데이터
     const formData = {
-      id: uuidv4(),
       date: date.current.value.trim(),
       item: item.current.value.trim(),
       amount: parseInt(amount.current.value.trim()),
