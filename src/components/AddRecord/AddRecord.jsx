@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from "react";
 import styled from "styled-components";
-import { FamilyContext } from "../../context/FamilyContext";
+import { FamilyContext, PopupContext } from "../../context/FamilyContext";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -23,6 +23,8 @@ const Button = styled.button`
 
 function AddRecord() {
   const datas = useContext(FamilyContext);
+  const popup = useContext(PopupContext);
+
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -52,13 +54,13 @@ function AddRecord() {
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
 
-      datas.setWarning((prev) => ({
+      popup.setWarning((prev) => ({
         ...prev,
         isVisible: true,
         message,
       }));
       setTimeout(() => {
-        datas.setWarning((prev) => ({
+        popup.setWarning((prev) => ({
           ...prev,
           isVisible: false,
           message,

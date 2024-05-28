@@ -1,7 +1,7 @@
 import { useContext, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { FamilyContext } from "../../context/FamilyContext";
+import { FamilyContext, PopupContext } from "../../context/FamilyContext";
 import GlobalStyle from "../../styles/GlobalStyle";
 import Modal from "../Modal";
 const Button = styled.button`
@@ -30,6 +30,8 @@ const MODI_MESSAGE = "수정하시겠습니까 ?";
 
 function DetailRecords() {
   const datas = useContext(FamilyContext);
+  const popup = useContext(PopupContext);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -66,14 +68,14 @@ function DetailRecords() {
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
 
-      datas.setWarning((prev) => ({
+      popup.setWarning((prev) => ({
         ...prev,
         isVisible: true,
         message,
       }));
       setTimeout(
         () =>
-          datas.setWarning((prev) => ({
+          popup.setWarning((prev) => ({
             ...prev,
             isVisible: false,
             message: "",
@@ -105,37 +107,31 @@ function DetailRecords() {
   };
 
   const handleCancel = () => {
-    datas.setModal((prev) => ({
+    popup.setModal((prev) => ({
       ...prev,
       isVisible: false,
       message: "",
     }));
   };
   const handleConfirm = () => {
-    if (datas.modal.message == MODI_MESSAGE) {
+    if (popup.modal.message == MODI_MESSAGE) {
       handleModify();
-    } else if (datas.modal.message == DEL_MESSAGE) {
+    } else if (popup.modal.message == DEL_MESSAGE) {
       handleDelete();
     }
-    datas.setModal((prev) => ({
+    popup.setModal((prev) => ({
       ...prev,
       isVisible: false,
       message: "",
     }));
   };
-  const handleModal = (type) => {
-    datas.setModal((prev) => ({
-      ...prev,
-      isVisible: true,
-      message: type,
-    }));
-  };
+
   return (
     <Section>
-      <GlobalStyle isModalOpen={datas.modal.isVisible} />
-      {datas.modal.isVisible && (
+      <GlobalStyle isModalOpen={popup.modal.isVisible} />
+      {popup.modal.isVisible && (
         <Modal
-          message={datas.modal.message}
+          message={popup.modal.message}
           handleConfirm={handleConfirm}
           handleCancel={handleCancel}
         />
@@ -184,22 +180,22 @@ function DetailRecords() {
         </Container>
         <Container direction="row">
           <Button
-            color={"var(--blue-color)"}
-            hovercolor={"var(--darkblue-color)"}
-            onClick={() => handleModal(MODI_MESSAGE)}
+            color="var(--blue-color)"
+            hovercolor="var(--darkblue-color)"
+            onClick={() => popup.handleModal(MODI_MESSAGE)}
           >
             수정
           </Button>
           <Button
-            color={" var(--red-color)"}
-            hovercolor={"var(--darkred-color)"}
-            onClick={() => handleModal(DEL_MESSAGE)}
+            color=" var(--red-color)"
+            hovercolor="var(--darkred-color)"
+            onClick={() => popup.handleModal(DEL_MESSAGE)}
           >
             삭제
           </Button>
           <Button
-            color={"var(--grey-color)"}
-            hovercolor={"var(--darkgrey-color)"}
+            color="var(--grey-color)"
+            hovercolor="var(--darkgrey-color)"
             onClick={handleBack}
           >
             뒤로가기

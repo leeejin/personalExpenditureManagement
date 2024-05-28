@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import styled from "styled-components";
-import { FamilyContext } from "../../context/FamilyContext";
+import { PopupContext } from "../../context/FamilyContext";
 import warningIcon from "../../styles/images/warning-icon.png";
 
 const AlertWrap = styled.div`
@@ -34,11 +34,11 @@ const Img = styled.img`
 `;
 /** 알림창 */
 const Alert = () => {
-  const datas = useContext(FamilyContext);
+  const popup = useContext(PopupContext);
   return (
     <AlertWrap>
       <Img src={warningIcon} />
-      <h3>{datas.warning.message}</h3>
+      <h3>{popup.warning.message}</h3>
     </AlertWrap>
   );
 };

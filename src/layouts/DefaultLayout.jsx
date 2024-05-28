@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import Alert from "../components/Alert";
-import { FamilyContext } from "../context/FamilyContext";
+import { FamilyContext, PopupContext } from "../context/FamilyContext";
 import GlobalStyle from "../styles/GlobalStyle";
 import "../styles/color.css";
 
@@ -41,28 +41,34 @@ function DefaultLayout() {
     const newData = [...expendedDatas, formData];
     localStorage.setItem("data", JSON.stringify(newData));
   };
-
+  const handleModal = (type) => {
+    setModal((prev) => ({
+      ...prev,
+      isVisible: true,
+      message: type,
+    }));
+  };
   return (
-    <FamilyContext.Provider
-      value={{
-        setWarning,
-        setExpendedDatas,
-        filteredDatas,
-        selectedMonth,
-        handleExpendDatas,
-        handleChangeDate,
-        expendedDatas,
-        warning,
-        modal,
-        setModal,
-      }}
+    <PopupContext.Provider
+      value={{ warning, modal, setModal, handleModal, setWarning }}
     >
-      {warning.isVisible && <Alert />}
-      <GlobalStyle />
-      <Container>
-        <Outlet />
-      </Container>
-    </FamilyContext.Provider>
+      <FamilyContext.Provider
+        value={{
+          setExpendedDatas,
+          filteredDatas,
+          selectedMonth,
+          handleExpendDatas,
+          handleChangeDate,
+          expendedDatas,
+        }}
+      >
+        {warning.isVisible && <Alert />}
+        <GlobalStyle />
+        <Container>
+          <Outlet />
+        </Container>
+      </FamilyContext.Provider>
+    </PopupContext.Provider>
   );
 }
 export default DefaultLayout;
