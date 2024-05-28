@@ -30,7 +30,7 @@ const MODI_MESSAGE = "수정하시겠습니까 ?";
 
 function DetailRecords() {
   const datas = useContext(FamilyContext);
-  const popup = useContext(PopupContext);
+  const { setWarning, modal, setModal, handleModal } = useContext(PopupContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -68,14 +68,14 @@ function DetailRecords() {
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
 
-      popup.setWarning((prev) => ({
+      setWarning((prev) => ({
         ...prev,
         isVisible: true,
         message,
       }));
       setTimeout(
         () =>
-          popup.setWarning((prev) => ({
+          setWarning((prev) => ({
             ...prev,
             isVisible: false,
             message: "",
@@ -107,12 +107,12 @@ function DetailRecords() {
   };
 
   const handleConfirm = () => {
-    if (popup.modal.message == MODI_MESSAGE) {
+    if (modal.message == MODI_MESSAGE) {
       handleModify();
-    } else if (popup.modal.message == DEL_MESSAGE) {
+    } else if (modal.message == DEL_MESSAGE) {
       handleDelete();
     }
-    popup.setModal((prev) => ({
+    setModal((prev) => ({
       ...prev,
       isVisible: false,
       message: "",
@@ -121,8 +121,8 @@ function DetailRecords() {
 
   return (
     <Section>
-      <GlobalStyle isModalOpen={popup.modal.isVisible} />
-      {popup.modal.isVisible && <Modal handleConfirm={handleConfirm} />}
+      <GlobalStyle isModalOpen={modal.isVisible} />
+      {modal.isVisible && <Modal handleConfirm={handleConfirm} />}
 
       <Container direction="column">
         <Container direction="column">
@@ -169,14 +169,14 @@ function DetailRecords() {
           <Button
             color="var(--blue-color)"
             hovercolor="var(--darkblue-color)"
-            onClick={() => popup.handleModal(MODI_MESSAGE)}
+            onClick={() => handleModal(MODI_MESSAGE)}
           >
             수정
           </Button>
           <Button
             color=" var(--red-color)"
             hovercolor="var(--darkred-color)"
-            onClick={() => popup.handleModal(DEL_MESSAGE)}
+            onClick={() => handleModal(DEL_MESSAGE)}
           >
             삭제
           </Button>

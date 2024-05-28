@@ -51,9 +51,9 @@ const Message = styled.h1`
   margin: auto;
 `;
 function Modal({ handleConfirm }) {
-  const popup = useContext(PopupContext);
+  const { setModal, modal } = useContext(PopupContext);
   const handleCancel = () => {
-    popup.setModal((prev) => ({
+    setModal((prev) => ({
       ...prev,
       isVisible: false,
       message: "",
@@ -62,7 +62,7 @@ function Modal({ handleConfirm }) {
   return (
     <BackWrap>
       <WhiteWrap>
-        <Message>{popup.modal.message}</Message>
+        <Message>{modal.message}</Message>
         <Footer>
           <Button
             color={"var(--blue-color)"}

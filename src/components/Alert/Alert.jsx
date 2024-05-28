@@ -34,11 +34,11 @@ const Img = styled.img`
 `;
 /** 알림창 */
 const Alert = () => {
-  const popup = useContext(PopupContext);
+  const { warning } = useContext(PopupContext);
   return (
     <AlertWrap>
       <Img src={warningIcon} />
-      <h3>{popup.warning.message}</h3>
+      <h3>{warning.message}</h3>
     </AlertWrap>
   );
 };

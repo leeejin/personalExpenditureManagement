@@ -23,8 +23,8 @@ const Button = styled.button`
 `;
 
 function AddRecord() {
-  const datas = useContext(FamilyContext);
-  const popup = useContext(PopupContext);
+  const { handleExpendDatas } = useContext(FamilyContext);
+  const { setWarning } = useContext(PopupContext);
 
   const date = useRef("");
   const item = useRef("");
@@ -55,13 +55,13 @@ function AddRecord() {
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
 
-      popup.setWarning((prev) => ({
+      setWarning((prev) => ({
         ...prev,
         isVisible: true,
         message,
       }));
       setTimeout(() => {
-        popup.setWarning((prev) => ({
+        setWarning((prev) => ({
           ...prev,
           isVisible: false,
           message,
@@ -69,7 +69,7 @@ function AddRecord() {
       }, 1500);
       return;
     }
-    datas.handleExpendDatas(formData);
+    handleExpendDatas(formData);
   };
   return (
     <Container>

@@ -63,9 +63,9 @@ const summarizeExpenses = (expenses) => {
   }));
 };
 function GraphRecords() {
-  const datas = useContext(FamilyContext);
+  const { filteredDatas, selectedMonth } = useContext(FamilyContext);
 
-  const categoryDatas = summarizeExpenses(datas.filteredDatas).sort((a, b) => {
+  const categoryDatas = summarizeExpenses(filteredDatas).sort((a, b) => {
     return Object.values(b) - Object.values(a);
   });
   let arr = [];
@@ -82,7 +82,7 @@ function GraphRecords() {
     }
   }
   const handleTotalCost = () => {
-    const costArr = datas.filteredDatas.map((data) => data.amount);
+    const costArr = filteredDatas.map((data) => data.amount);
     return costArr.reduce((prev, cur) => (prev += cur), 0);
   };
 
@@ -100,8 +100,7 @@ function GraphRecords() {
   return (
     <>
       <Font>
-        {datas.selectedMonth}월 총 지출 : {handleTotalCost().toLocaleString()}{" "}
-        원
+        {selectedMonth}월 총 지출 : {handleTotalCost().toLocaleString()} 원
       </Font>
       <GraphBack>
         {arr.map((data, i) => (

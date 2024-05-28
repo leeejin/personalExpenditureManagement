@@ -44,10 +44,10 @@ const Font = styled.span`
 
 function FooterRecords() {
   const navigate = useNavigate();
-  const datas = useContext(FamilyContext);
+  const { filteredDatas } = useContext(FamilyContext);
 
   const handleGoDetail = (recordId) => {
-    const data = datas.filteredDatas.filter((data) => data.id === recordId);
+    const data = filteredDatas.filter((data) => data.id === recordId);
     navigate(`/records/${recordId}`, {
       state: {
         data,
@@ -57,8 +57,8 @@ function FooterRecords() {
   };
   return (
     <FlexContainer>
-      {datas.filteredDatas.length ? (
-        datas.filteredDatas.map((data) => (
+      {filteredDatas.length ? (
+        filteredDatas.map((data) => (
           <Card key={data.id} onClick={() => handleGoDetail(data.id)}>
             <CardItem>
               <Font size={"14px"} color={"var(--grey-color)"} weight={"100"}>
