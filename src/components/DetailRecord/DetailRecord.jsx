@@ -2,14 +2,12 @@ import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import {
-  DELETE_RECORD,
-  MODIFY_RECORD,
-} from "../../redux/reducers/auth.reducer";
-import { Modal_CLOSE, Modal_OPEN } from "../../redux/reducers/modal.reducer";
-import { Warning_CLOSE, Warning_OPEN } from "../../redux/reducers/popup.reducer";
+import { deleteAuth, modifyAuth } from "../../redux/reducers/auth.reducer";
+import { modalClose, modalOpen } from "../../redux/reducers/modal.reducer";
+import { popupClose, popupOpen } from "../../redux/reducers/popup.reducer";
 import GlobalStyle from "../../styles/GlobalStyle";
 import Modal from "../Modal";
+
 const DEL_MESSAGE = "삭제하시겠습니까 ?";
 const MODI_MESSAGE = "수정하시겠습니까 ?";
 
@@ -40,7 +38,6 @@ function DetailRecord() {
   const location = useLocation();
   const modal = useSelector((state) => state.modal);
   const { data, recordId } = location.state;
-  const filteredData = data.filter((data) => data.id === recordId)[0];
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -70,21 +67,18 @@ function DetailRecord() {
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
 
-      dispatch({ type: Warning_OPEN, payload: { isVisible: true, message } });
-      setTimeout(() => dispatch({ type: Warning_CLOSE }), 1500);
+      dispatch(popupOpen({ isVisible: true, message }));
+      setTimeout(() => dispatch(popupClose()), 1500);
       return;
     }
 
-    dispatch({
-      type: MODIFY_RECORD,
-      payload: { recordId, formData },
-    });
+    dispatch(modifyAuth({ recordId, formData }));
 
     navigate("/");
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    dispatch({ type: DELETE_RECORD, payload: recordId });
+    dispatch(deleteAuth(recordId));
     navigate("/");
   };
   /** 뒤로가기함수 */
@@ -98,10 +92,10 @@ function DetailRecord() {
     } else if (modal.message == DEL_MESSAGE) {
       handleDelete();
     }
-    dispatch({ type: Modal_CLOSE });
+    dispatch(modalClose());
   };
   const handleModal = (type) => {
-    dispatch({ type: Modal_OPEN, payload: { isVisible: true, message: type } });
+    dispatch(modalOpen({ isVisible: true, message: type }));
   };
   return (
     <Section>
@@ -115,7 +109,7 @@ function DetailRecord() {
             id="date"
             ref={date}
             placeholder="YYYY-MM-DD"
-            defaultValue={filteredData.date}
+            defaultValue={data[0].date}
           />
         </Container>
         <Container direction="column">
@@ -125,7 +119,7 @@ function DetailRecord() {
             id="item"
             ref={item}
             placeholder="지출 항목"
-            defaultValue={filteredData.item}
+            defaultValue={data[0].item}
           />
         </Container>
         <Container direction="column">
@@ -135,7 +129,7 @@ function DetailRecord() {
             id="amount"
             ref={amount}
             placeholder="지출 금액"
-            defaultValue={filteredData.amount}
+            defaultValue={data[0].amount}
           />
         </Container>
         <Container direction="column">
@@ -145,7 +139,7 @@ function DetailRecord() {
             id="description"
             ref={description}
             placeholder="지출 내용"
-            defaultValue={filteredData.description}
+            defaultValue={data[0].description}
           />
         </Container>
         <Container direction="row">

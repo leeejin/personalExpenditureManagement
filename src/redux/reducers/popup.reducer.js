@@ -1,25 +1,23 @@
-export const Warning_OPEN = "popup/Warning/open";
-export const Warning_CLOSE = "popup/Warning/close";
+import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isVisible: false,
   message: "",
 };
-function popupReducer(prevState = initialState, action) {
-  switch (action.type) {
-    case Warning_OPEN:
-      return {
-        ...prevState,
-        isVisible: action.payload.isVisible,
-        message: action.payload.message,
-      };
-    case Warning_CLOSE:
-      return {
-        ...prevState,
-        isVisible: false,
-        message: "",
-      };
-    default:
-      return prevState;
-  }
-}
-export default popupReducer;
+
+const popupSlice = createSlice({
+  name: "popup",
+  initialState,
+  reducers: {
+    popupOpen: (state, action) => {
+      state.isVisible = action.payload.isVisible;
+      state.message = action.payload.message;
+    },
+    popupClose: (state) => {
+      state.isVisible = false;
+      state.message = "";
+    },
+  },
+});
+export const { popupOpen, popupClose } = popupSlice.actions;
+
+export default popupSlice.reducer;

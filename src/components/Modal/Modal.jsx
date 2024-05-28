@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { Modal_CLOSE } from "../../redux/reducers/modal.reducer";
+import { modalClose } from "../../redux/reducers/modal.reducer";
 const BackWrap = styled.div`
   position: fixed;
   top: 0px;
@@ -55,7 +55,7 @@ function Modal({ handleConfirm }) {
   const modal = useSelector((state) => state.modal);
 
   const handleCancel = () => {
-    dispatch({ type: Modal_CLOSE });
+    dispatch(modalClose());
   };
   return (
     <BackWrap>

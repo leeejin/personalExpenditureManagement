@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { CHANGE_MONTH } from "../../redux/reducers/auth.reducer";
+import { changeAuth } from "../../redux/reducers/auth.reducer";
 
 const FontSpan = styled.span`
   font-size: 18px;
@@ -39,7 +39,7 @@ function MonthRecords() {
   const selectedMonth = useSelector((state) => state.auth.selectedMonth);
   const dispatch = useDispatch();
   const handleChangeDate = (month) => {
-    dispatch({ type: CHANGE_MONTH, payload: month });
+    dispatch(changeAuth(month));
   };
   return (
     <>

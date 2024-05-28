@@ -10,9 +10,9 @@ const AlertWrap = styled.div`
   background-color: var(--white-color);
   box-shadow: 3px 3px 3px var(--grey-color);
   z-index: 15;
-  top: 50%; // 중앙 고정
-  left: 50%; // 중앙 고정
-  transform: translate(-50%, -50%); // 중앙 정렬
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   margin: auto;
   animation: alertAnimation 1.5s forwards;
   @keyframes alertAnimation {
@@ -20,7 +20,7 @@ const AlertWrap = styled.div`
       top: -120px;
     }
     50% {
-      top: 100px; // 중앙 고정
+      top: 100px;
     }
     100% {
       top: -120px;

@@ -1,11 +1,8 @@
 import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { ADD_RECORD } from "../../redux/reducers/auth.reducer";
-import {
-  Warning_CLOSE,
-  Warning_OPEN,
-} from "../../redux/reducers/popup.reducer";
+import { addAuth } from "../../redux/reducers/auth.reducer";
+import { popupClose, popupOpen } from "../../redux/reducers/popup.reducer";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -56,14 +53,14 @@ function AddRecord() {
       else if (error.item) message = "항목을 입력해주세요";
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
-      dispatch({ type: Warning_OPEN, payload: { isVisible: true, message } });
+      dispatch(popupOpen({ isVisible: true, message }));
 
       setTimeout(() => {
-        dispatch({ type: Warning_CLOSE });
+        dispatch(popupClose());
       }, 1500);
       return;
     }
-    dispatch({ type: ADD_RECORD, payload: formData });
+    dispatch(addAuth(formData));
   };
 
   return (
