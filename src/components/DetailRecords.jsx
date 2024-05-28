@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import GlobalStyle from "../styles/GlobalStyle";
 import Alert from "./Alert";
+import Modal from "./Modal";
 const Button = styled.button`
   background-color: ${(props) => props.color};
   color: var(--white-color);
@@ -23,18 +25,27 @@ const Container = styled.div`
   text-align: left;
 `;
 
+const DEL_MESSAGE = "삭제하시겠습니까 ?";
+const MODI_MESSAGE = "수정하시겠습니까 ?";
+const localData = JSON.parse(localStorage.getItem("data"));
+
 function DetailRecords() {
   const navigate = useNavigate();
   const location = useLocation();
-  const localData = JSON.parse(localStorage.getItem("data"));
+
   const { data, recordId } = location.state;
   const filteredData = data.filter((data) => data.id === recordId)[0];
 
-  const [alerts, setAlerts] = useState({ isVisible: false, message: "" });
+  const [warning, setWarning] = useState({ isVisible: false, message: "" });
+  const [modal, setModal] = useState({
+    isVisible: false,
+    message: "",
+  });
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
   const description = useRef("");
+
   /** 수정함수 */
   const handleModify = () => {
     //수정할 데이터
@@ -53,35 +64,21 @@ function DetailRecords() {
       amount: formData.amount <= 0,
       description: !formData.description.length,
     };
+    let message = "";
     if (error.date || error.item || error.amount || error.description) {
-      if (error.date) {
-        setAlerts((prev) => ({
-          ...prev,
-          isVisible: true,
-          message: "날짜형식이 잘못되었습니다",
-        }));
-      } else if (error.item) {
-        setAlerts((prev) => ({
-          ...prev,
-          isVisible: true,
-          message: "항목을 입력해주세요",
-        }));
-      } else if (error.amount) {
-        setAlerts((prev) => ({
-          ...prev,
-          isVisible: true,
-          message: "금액은 양수로 입력해주세요",
-        }));
-      } else if (error.description) {
-        setAlerts((prev) => ({
-          ...prev,
-          isVisible: true,
-          message: "내용을 입력해주세요",
-        }));
-      }
+      if (error.date) message = "날짜형식이 잘못되었습니다";
+      else if (error.item) message = "항목을 입력해주세요";
+      else if (error.amount) message = "금액은 양수로 입력해주세요";
+      else if (error.description) message = "내용을 입력해주세요";
+
+      setWarning((prev) => ({
+        ...prev,
+        isVisible: true,
+        message,
+      }));
       setTimeout(
         () =>
-          setAlerts((prev) => ({
+          setWarning((prev) => ({
             ...prev,
             isVisible: false,
             message: "",
@@ -95,25 +92,57 @@ function DetailRecords() {
       return data;
     }, localData);
     localStorage.setItem("data", JSON.stringify(modifiedData));
-    alert("수정완료되었습니다");
     navigate("/");
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    if (confirm("삭제하시겠습니까?")) {
-      const deleteData = localData.filter((data) => data.id !== recordId);
-      localStorage.setItem("data", JSON.stringify(deleteData));
-      alert("삭제완료되었습니다");
-      navigate("/");
-    }
+    const deleteData = localData.filter((data) => data.id !== recordId);
+    localStorage.setItem("data", JSON.stringify(deleteData));
+    navigate("/");
   };
   /** 뒤로가기함수 */
   const handleBack = () => {
     navigate(-1);
   };
+
+  const handleCancel = () => {
+    setModal((prev) => ({
+      ...prev,
+      isVisible: false,
+      message: "",
+    }));
+  };
+  const handleConfirm = () => {
+    if (modal.message == MODI_MESSAGE) {
+      handleModify();
+    } else if (modal.message == DEL_MESSAGE) {
+      handleDelete();
+    }
+    setModal((prev) => ({
+      ...prev,
+      isVisible: false,
+      message: "",
+    }));
+  };
+  const handleModal = (type) => {
+    setModal((prev) => ({
+      ...prev,
+      isVisible: true,
+      message: type,
+    }));
+  };
   return (
     <Section>
-      {alerts.isVisible && <Alert message={alerts.message} />}
+      <GlobalStyle isModalOpen={modal.isVisible} />
+      {modal.isVisible && (
+        <Modal
+          message={modal.message}
+          handleConfirm={handleConfirm}
+          handleCancel={handleCancel}
+        />
+      )}
+
+      {warning.isVisible && <Alert message={warning.message} />}
       <Container direction="column">
         <Container direction="column">
           <label htmlFor="date">날짜</label>
@@ -159,14 +188,14 @@ function DetailRecords() {
           <Button
             color={"var(--blue-color)"}
             hovercolor={"var(--darkblue-color)"}
-            onClick={handleModify}
+            onClick={() => handleModal(MODI_MESSAGE)}
           >
             수정
           </Button>
           <Button
             color={" var(--red-color)"}
             hovercolor={"var(--darkred-color)"}
-            onClick={handleDelete}
+            onClick={() => handleModal(DEL_MESSAGE)}
           >
             삭제
           </Button>
