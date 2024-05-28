@@ -1,6 +1,7 @@
 import { useContext, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { v4 as uuidv4 } from "uuid";
 import { FamilyContext, PopupContext } from "../../context/FamilyContext";
 import GlobalStyle from "../../styles/GlobalStyle";
 import Modal from "../Modal";
@@ -47,19 +48,20 @@ function DetailRecords() {
   const handleModify = () => {
     //수정할 데이터
     const formData = {
-      date: date.current.value,
-      item: item.current.value,
-      amount: parseInt(amount.current.value),
-      description: description.current.value,
+      id: uuidv4(),
+      date: date.current.value.trim(),
+      item: item.current.value.trim(),
+      amount: parseInt(amount.current.value.trim()),
+      description: description.current.value.trim(),
     };
     const error = {
       date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
         5,
         7
       )}-${formData.date.slice(8)}`,
-      item: !formData.item.length,
+      item: !formData.item.trim().length,
       amount: formData.amount <= 0,
-      description: !formData.description.length,
+      description: !formData.description.trim().length,
     };
     let message = "";
     if (error.date || error.item || error.amount || error.description) {
@@ -106,13 +108,6 @@ function DetailRecords() {
     navigate(-1);
   };
 
-  const handleCancel = () => {
-    popup.setModal((prev) => ({
-      ...prev,
-      isVisible: false,
-      message: "",
-    }));
-  };
   const handleConfirm = () => {
     if (popup.modal.message == MODI_MESSAGE) {
       handleModify();
@@ -129,13 +124,7 @@ function DetailRecords() {
   return (
     <Section>
       <GlobalStyle isModalOpen={popup.modal.isVisible} />
-      {popup.modal.isVisible && (
-        <Modal
-          message={popup.modal.message}
-          handleConfirm={handleConfirm}
-          handleCancel={handleCancel}
-        />
-      )}
+      {popup.modal.isVisible && <Modal handleConfirm={handleConfirm} />}
 
       <Container direction="column">
         <Container direction="column">

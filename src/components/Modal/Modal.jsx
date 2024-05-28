@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import styled from "styled-components";
+import { PopupContext } from "../../context/FamilyContext";
 const BackWrap = styled.div`
   position: fixed;
   top: 0px;
@@ -48,11 +50,19 @@ const Message = styled.h1`
   font-weight: bold;
   margin: auto;
 `;
-function Modal({ message, handleConfirm, handleCancel }) {
+function Modal({ handleConfirm }) {
+  const popup = useContext(PopupContext);
+  const handleCancel = () => {
+    popup.setModal((prev) => ({
+      ...prev,
+      isVisible: false,
+      message: "",
+    }));
+  };
   return (
     <BackWrap>
       <WhiteWrap>
-        <Message>{message}</Message>
+        <Message>{popup.modal.message}</Message>
         <Footer>
           <Button
             color={"var(--blue-color)"}
