@@ -1,7 +1,6 @@
 import { useContext, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { v4 as uuidv4 } from "uuid";
 import { FamilyContext, PopupContext } from "../../context/FamilyContext";
 import GlobalStyle from "../../styles/GlobalStyle";
 import Modal from "../Modal";
@@ -48,7 +47,6 @@ function DetailRecords() {
   const handleModify = () => {
     //수정할 데이터
     const formData = {
-      id: uuidv4(),
       date: date.current.value.trim(),
       item: item.current.value.trim(),
       amount: parseInt(amount.current.value.trim()),
