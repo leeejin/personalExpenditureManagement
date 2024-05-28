@@ -1,6 +1,9 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { FamilyContext } from "../../context/FamilyContext";
+import GlobalStyle from "../../styles/GlobalStyle";
+import Modal from "../Modal";
 const Button = styled.button`
   background-color: ${(props) => props.color};
   color: var(--white-color);
@@ -22,10 +25,14 @@ const Container = styled.div`
   text-align: left;
 `;
 
-function DetailRecord() {
+const DEL_MESSAGE = "삭제하시겠습니까 ?";
+const MODI_MESSAGE = "수정하시겠습니까 ?";
+
+function DetailRecords() {
+  const datas = useContext(FamilyContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const localData = JSON.parse(localStorage.getItem("data"));
+
   const { data, recordId } = location.state;
   const filteredData = data.filter((data) => data.id === recordId)[0];
 
@@ -33,6 +40,7 @@ function DetailRecord() {
   const item = useRef("");
   const amount = useRef(0);
   const description = useRef("");
+
   /** 수정함수 */
   const handleModify = () => {
     //수정할 데이터
@@ -42,29 +50,97 @@ function DetailRecord() {
       amount: parseInt(amount.current.value),
       description: description.current.value,
     };
-    const modifiedData = localData.map((data) => {
+    const error = {
+      date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
+        5,
+        7
+      )}-${formData.date.slice(8)}`,
+      item: !formData.item.length,
+      amount: formData.amount <= 0,
+      description: !formData.description.length,
+    };
+    let message = "";
+    if (error.date || error.item || error.amount || error.description) {
+      if (error.date) message = "날짜형식이 잘못되었습니다";
+      else if (error.item) message = "항목을 입력해주세요";
+      else if (error.amount) message = "금액은 양수로 입력해주세요";
+      else if (error.description) message = "내용을 입력해주세요";
+
+      datas.setWarning((prev) => ({
+        ...prev,
+        isVisible: true,
+        message,
+      }));
+      setTimeout(
+        () =>
+          datas.setWarning((prev) => ({
+            ...prev,
+            isVisible: false,
+            message: "",
+          })),
+        1500
+      );
+      return;
+    }
+    const modifiedData = datas.expendedDatas.map((data) => {
       if (data.id === recordId) return { ...data, ...formData };
       return data;
-    }, localData);
+    }, datas.expendedDatas);
+    datas.setExpendedDatas(modifiedData);
     localStorage.setItem("data", JSON.stringify(modifiedData));
-    alert("수정완료되었습니다");
     navigate("/");
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    if (confirm("삭제하시겠습니까?")) {
-      const deleteData = localData.filter((data) => data.id !== recordId);
-      localStorage.setItem("data", JSON.stringify(deleteData));
-      alert("삭제완료되었습니다");
-      navigate("/");
-    }
+    const deleteData = datas.expendedDatas.filter(
+      (data) => data.id !== recordId
+    );
+    datas.setExpendedDatas(deleteData);
+    localStorage.setItem("data", JSON.stringify(deleteData));
+    navigate("/");
   };
   /** 뒤로가기함수 */
   const handleBack = () => {
     navigate(-1);
   };
+
+  const handleCancel = () => {
+    datas.setModal((prev) => ({
+      ...prev,
+      isVisible: false,
+      message: "",
+    }));
+  };
+  const handleConfirm = () => {
+    if (datas.modal.message == MODI_MESSAGE) {
+      handleModify();
+    } else if (datas.modal.message == DEL_MESSAGE) {
+      handleDelete();
+    }
+    datas.setModal((prev) => ({
+      ...prev,
+      isVisible: false,
+      message: "",
+    }));
+  };
+  const handleModal = (type) => {
+    datas.setModal((prev) => ({
+      ...prev,
+      isVisible: true,
+      message: type,
+    }));
+  };
   return (
     <Section>
+      <GlobalStyle isModalOpen={datas.modal.isVisible} />
+      {datas.modal.isVisible && (
+        <Modal
+          message={datas.modal.message}
+          handleConfirm={handleConfirm}
+          handleCancel={handleCancel}
+        />
+      )}
+
       <Container direction="column">
         <Container direction="column">
           <label htmlFor="date">날짜</label>
@@ -110,14 +186,14 @@ function DetailRecord() {
           <Button
             color={"var(--blue-color)"}
             hovercolor={"var(--darkblue-color)"}
-            onClick={handleModify}
+            onClick={() => handleModal(MODI_MESSAGE)}
           >
             수정
           </Button>
           <Button
             color={" var(--red-color)"}
             hovercolor={"var(--darkred-color)"}
-            onClick={handleDelete}
+            onClick={() => handleModal(DEL_MESSAGE)}
           >
             삭제
           </Button>
@@ -134,4 +210,4 @@ function DetailRecord() {
   );
 }
 
-export default DetailRecord;
+export default DetailRecords;

@@ -45,16 +45,25 @@ function AddRecord() {
       amount: formData.amount <= 0,
       description: !formData.description.length,
     };
+    let message = "";
     if (error.date || error.item || error.amount || error.description) {
-      if (error.date) {
-        alert("날짜형식이 잘못되었습니다");
-      } else if (error.item) {
-        alert("항목을 입력해주세요");
-      } else if (error.amount) {
-        alert("금액은 양수로 입력해주세요");
-      } else if (error.description) {
-        alert("내용을 입력해주세요");
-      }
+      if (error.date) message = "날짜형식이 잘못되었습니다";
+      else if (error.item) message = "항목을 입력해주세요";
+      else if (error.amount) message = "금액은 양수로 입력해주세요";
+      else if (error.description) message = "내용을 입력해주세요";
+
+      datas.setWarning((prev) => ({
+        ...prev,
+        isVisible: true,
+        message,
+      }));
+      setTimeout(() => {
+        datas.setWarning((prev) => ({
+          ...prev,
+          isVisible: false,
+          message,
+        }));
+      }, 1500);
       return;
     }
     datas.handleExpendDatas(formData);
