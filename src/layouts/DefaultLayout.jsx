@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import Alert from "../components/Alert";
@@ -32,22 +32,28 @@ function DefaultLayout() {
     setExpendedDatas(data);
   }, []);
 
-  const handleChangeDate = (month) => {
-    setSelectedMonth(month);
-  };
+  const handleChangeDate = useCallback(
+    (month) => {
+      setSelectedMonth(month);
+    },
+    [selectedMonth]
+  );
   const handleExpendDatas = (formData) => {
     setExpendedDatas((prev) => [...prev, formData]);
     setSelectedMonth(`${formData.date.slice(5, 7)}`);
     const newData = [...expendedDatas, formData];
     localStorage.setItem("data", JSON.stringify(newData));
   };
-  const handleModal = (type) => {
-    setModal((prev) => ({
-      ...prev,
-      isVisible: true,
-      message: type,
-    }));
-  };
+  const handleModal = useCallback(
+    (type) => {
+      setModal((prev) => ({
+        ...prev,
+        isVisible: true,
+        message: type,
+      }));
+    },
+    [modal.message]
+  );
   return (
     <PopupContext.Provider
       value={{ warning, modal, setModal, handleModal, setWarning }}

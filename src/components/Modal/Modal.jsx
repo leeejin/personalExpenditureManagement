@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import styled from "styled-components";
 import { PopupContext } from "../../context/FamilyContext";
 const BackWrap = styled.div`
@@ -52,13 +52,13 @@ const Message = styled.h1`
 `;
 function Modal({ handleConfirm }) {
   const { setModal, modal } = useContext(PopupContext);
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setModal((prev) => ({
       ...prev,
       isVisible: false,
       message: "",
     }));
-  };
+  }, []);
   return (
     <BackWrap>
       <WhiteWrap>

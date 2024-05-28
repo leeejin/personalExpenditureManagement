@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useCallback, useContext, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FamilyContext, PopupContext } from "../../context/FamilyContext";
@@ -29,7 +29,7 @@ const DEL_MESSAGE = "삭제하시겠습니까 ?";
 const MODI_MESSAGE = "수정하시겠습니까 ?";
 
 function DetailRecords() {
-  const datas = useContext(FamilyContext);
+  const { expendedDatas, setExpendedDatas } = useContext(FamilyContext);
   const { setWarning, modal, setModal, handleModal } = useContext(PopupContext);
 
   const navigate = useNavigate();
@@ -84,27 +84,25 @@ function DetailRecords() {
       );
       return;
     }
-    const modifiedData = datas.expendedDatas.map((data) => {
+    const modifiedData = expendedDatas.map((data) => {
       if (data.id === recordId) return { ...data, ...formData };
       return data;
-    }, datas.expendedDatas);
-    datas.setExpendedDatas(modifiedData);
+    }, expendedDatas);
+    setExpendedDatas(modifiedData);
     localStorage.setItem("data", JSON.stringify(modifiedData));
     navigate("/");
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    const deleteData = datas.expendedDatas.filter(
-      (data) => data.id !== recordId
-    );
-    datas.setExpendedDatas(deleteData);
+    const deleteData = expendedDatas.filter((data) => data.id !== recordId);
+    setExpendedDatas(deleteData);
     localStorage.setItem("data", JSON.stringify(deleteData));
     navigate("/");
   };
   /** 뒤로가기함수 */
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     navigate(-1);
-  };
+  }, []);
 
   const handleConfirm = () => {
     if (modal.message == MODI_MESSAGE) {
