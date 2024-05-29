@@ -46,9 +46,12 @@ function DetailRecords() {
     const formData = {
       date: date.current.value.trim(),
       item: item.current.value.trim(),
-      amount: parseInt(amount.current.value.trim()),
+      amount:
+        parseInt(amount.current.value.trim()) ||
+        (!amount.current.value.trim() && 0),
       description: description.current.value.trim(),
     };
+
     const error = {
       date: !isDateValid(formData.date),
       item: !formData.item.trim(),
