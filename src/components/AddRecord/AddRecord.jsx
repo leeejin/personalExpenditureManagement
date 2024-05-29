@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
-import { isDateValid } from "../util/date";
+import { isDateValid } from "../../util/date";
 
 const Container = styled.div`
   display: flex;
@@ -34,9 +34,12 @@ function AddRecord({ handleExpendDatas, setWarning }) {
       id: uuidv4(),
       date: date.current.value.trim(),
       item: item.current.value.trim(),
-      amount: parseInt(amount.current.value.trim()),
+      amount:
+        parseInt(amount.current.value.trim()) ||
+        (!amount.current.value.trim() && 0),
       description: description.current.value.trim(),
     };
+
     const error = {
       date: !isDateValid(formData.date),
       item: !formData.item.trim(),

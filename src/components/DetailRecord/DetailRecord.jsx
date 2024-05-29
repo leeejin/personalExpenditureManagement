@@ -1,10 +1,10 @@
 import { useCallback, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import GlobalStyle from "../styles/GlobalStyle";
-import { isDateValid } from "../util/date";
-import Alert from "./Alert";
-import Modal from "./Modal";
+import GlobalStyle from "../../styles/GlobalStyle";
+import { isDateValid } from "../../util/date";
+import Alert from "../Alert";
+import Modal from "../Modal";
 const Button = styled.button`
   background-color: ${(props) => props.color};
   color: var(--white-color);
@@ -50,9 +50,12 @@ function DetailRecords() {
     const formData = {
       date: date.current.value.trim(),
       item: item.current.value.trim(),
-      amount: parseInt(amount.current.value.trim()),
+      amount:
+        parseInt(amount.current.value.trim()) ||
+        (!amount.current.value.trim() && 0),
       description: description.current.value.trim(),
     };
+
     const error = {
       date: !isDateValid(formData.date),
       item: !formData.item.trim(),

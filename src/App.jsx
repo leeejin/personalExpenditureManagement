@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import DetailRecords from "./components/DetailRecords";
-import HomeRecords from "./components/HomeRecords";
-import Layout from "./layouts/home";
+import DetailRecords from "./components/DetailRecord/DetailRecord";
+import HomeRecords from "./components/HomeRecords/HomeRecords";
+import Layout from "./layouts/DefaultRecord";
 function Loading() {
   return (
     <div>

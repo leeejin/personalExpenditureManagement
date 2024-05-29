@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import AddRecord from "./AddRecord";
-import Alert from "./Alert";
-import FooterRecords from "./FooterRecords";
-import GraphRecords from "./GraphRecords";
-import MonthRecords from "./MonthRecords";
+import AddRecord from "../AddRecord";
+import Alert from "../Alert";
+import FooterRecords from "../FooterRecords";
+import GraphRecords from "../GraphRecords";
+import MonthRecords from "../MonthRecords";
 const Section = styled.section`
   background-color: var(--white-color);
   border-radius: 20px;

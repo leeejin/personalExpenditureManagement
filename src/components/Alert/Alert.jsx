@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import warningIcon from "../styles/images/warning-icon.png";
+import warningIcon from "../../styles/images/warning-icon.png";
 
 const AlertWrap = styled.div`
   position: fixed;
