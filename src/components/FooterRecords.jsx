@@ -44,13 +44,7 @@ function FooterRecords({ expendedDatas }) {
   const navigate = useNavigate();
 
   const handleGoDetail = (recordId) => {
-    const data = expendedDatas.filter((data) => data.id === recordId);
-    navigate(`/records/${recordId}`, {
-      state: {
-        data,
-        recordId,
-      },
-    });
+    navigate(`/records/${recordId}`);
   };
   return (
     <FlexContainer>

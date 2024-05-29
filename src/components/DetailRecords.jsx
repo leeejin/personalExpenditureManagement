@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useCallback, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import GlobalStyle from "../styles/GlobalStyle";
+import { isDateValid } from "../util/date";
 import Alert from "./Alert";
 import Modal from "./Modal";
 const Button = styled.button`
@@ -27,15 +28,12 @@ const Container = styled.div`
 
 const DEL_MESSAGE = "삭제하시겠습니까 ?";
 const MODI_MESSAGE = "수정하시겠습니까 ?";
-const localData = JSON.parse(localStorage.getItem("data"));
 
 function DetailRecords() {
+  const localData = JSON.parse(localStorage.getItem("data"));
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const { data, recordId } = location.state;
-  const filteredData = data.filter((data) => data.id === recordId)[0];
-
+  const params = useParams();
+  const data = localData.filter((data) => data.id === params.recordId)[0];
   const [warning, setWarning] = useState({ isVisible: false, message: "" });
   const [modal, setModal] = useState({
     isVisible: false,
@@ -56,13 +54,10 @@ function DetailRecords() {
       description: description.current.value.trim(),
     };
     const error = {
-      date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
-        5,
-        7
-      )}-${formData.date.slice(8)}`,
-      item: !formData.item.trim().length,
+      date: !isDateValid(formData.date),
+      item: !formData.item.trim(),
       amount: formData.amount <= 0,
-      description: !formData.description.trim().length,
+      description: !formData.description.trim(),
     };
     let message = "";
     if (error.date || error.item || error.amount || error.description) {
@@ -88,7 +83,7 @@ function DetailRecords() {
       return;
     }
     const modifiedData = localData.map((data) => {
-      if (data.id === recordId) return { ...data, ...formData };
+      if (data.id === params.recordId) return { ...data, ...formData };
       return data;
     }, localData);
     localStorage.setItem("data", JSON.stringify(modifiedData));
@@ -96,22 +91,22 @@ function DetailRecords() {
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    const deleteData = localData.filter((data) => data.id !== recordId);
+    const deleteData = localData.filter((data) => data.id !== params.recordId);
     localStorage.setItem("data", JSON.stringify(deleteData));
     navigate("/");
   };
   /** 뒤로가기함수 */
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     navigate(-1);
-  };
+  }, []);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setModal((prev) => ({
       ...prev,
       isVisible: false,
       message: "",
     }));
-  };
+  }, []);
   const handleConfirm = () => {
     if (modal.message == MODI_MESSAGE) {
       handleModify();
@@ -124,13 +119,16 @@ function DetailRecords() {
       message: "",
     }));
   };
-  const handleModal = (type) => {
-    setModal((prev) => ({
-      ...prev,
-      isVisible: true,
-      message: type,
-    }));
-  };
+  const handleModal = useCallback(
+    (type) => {
+      setModal((prev) => ({
+        ...prev,
+        isVisible: true,
+        message: type,
+      }));
+    },
+    [modal.message]
+  );
   return (
     <Section>
       <GlobalStyle isModalOpen={modal.isVisible} />
@@ -151,7 +149,7 @@ function DetailRecords() {
             id="date"
             ref={date}
             placeholder="YYYY-MM-DD"
-            defaultValue={filteredData.date}
+            defaultValue={data.date}
           />
         </Container>
         <Container direction="column">
@@ -161,7 +159,7 @@ function DetailRecords() {
             id="item"
             ref={item}
             placeholder="지출 항목"
-            defaultValue={filteredData.item}
+            defaultValue={data.item}
           />
         </Container>
         <Container direction="column">
@@ -171,7 +169,7 @@ function DetailRecords() {
             id="amount"
             ref={amount}
             placeholder="지출 금액"
-            defaultValue={filteredData.amount}
+            defaultValue={data.amount}
           />
         </Container>
         <Container direction="column">
@@ -181,7 +179,7 @@ function DetailRecords() {
             id="description"
             ref={description}
             placeholder="지출 내용"
-            defaultValue={filteredData.description}
+            defaultValue={data.description}
           />
         </Container>
         <Container direction="row">
