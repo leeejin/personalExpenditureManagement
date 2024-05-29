@@ -42,7 +42,7 @@ function MonthRecords({ selectedMonth, handleChangeDate }) {
           onClick={() => handleChangeDate(month)}
           selected={selectedMonth === month}
         >
-          <FontSpan>{month}월</FontSpan>
+          <FontSpan>{parseInt(month)}월</FontSpan>
         </DateButton>
       ))}
     </>
