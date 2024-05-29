@@ -47,13 +47,7 @@ function FooterRecords() {
   const { filteredDatas } = useContext(FamilyContext);
 
   const handleGoDetail = (recordId) => {
-    const data = filteredDatas.filter((data) => data.id === recordId);
-    navigate(`/records/${recordId}`, {
-      state: {
-        data,
-        recordId,
-      },
-    });
+    navigate(`/records/${recordId}`);
   };
   return (
     <FlexContainer>

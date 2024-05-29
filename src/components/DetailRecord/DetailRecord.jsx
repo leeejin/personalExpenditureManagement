@@ -1,8 +1,9 @@
 import { useCallback, useContext, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { FamilyContext, PopupContext } from "../../context/FamilyContext";
 import GlobalStyle from "../../styles/GlobalStyle";
+import { isDateValid } from "../../util/date";
 import Modal from "../Modal";
 const Button = styled.button`
   background-color: ${(props) => props.color};
@@ -31,13 +32,9 @@ const MODI_MESSAGE = "수정하시겠습니까 ?";
 function DetailRecords() {
   const { expendedDatas, setExpendedDatas } = useContext(FamilyContext);
   const { setWarning, modal, setModal, handleModal } = useContext(PopupContext);
-
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const { data, recordId } = location.state;
-  const filteredData = data.filter((data) => data.id === recordId)[0];
-
+  const params = useParams();
+  const data = expendedDatas.filter((data) => data.id == params.recordsId)[0];
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -53,13 +50,10 @@ function DetailRecords() {
       description: description.current.value.trim(),
     };
     const error = {
-      date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
-        5,
-        7
-      )}-${formData.date.slice(8)}`,
-      item: !formData.item.trim().length,
+      date: !isDateValid(formData.date),
+      item: !formData.item.trim(),
       amount: formData.amount <= 0,
-      description: !formData.description.trim().length,
+      description: !formData.description.trim(),
     };
     let message = "";
     if (error.date || error.item || error.amount || error.description) {
@@ -85,7 +79,7 @@ function DetailRecords() {
       return;
     }
     const modifiedData = expendedDatas.map((data) => {
-      if (data.id === recordId) return { ...data, ...formData };
+      if (data.id === params.recordsId) return { ...data, ...formData };
       return data;
     }, expendedDatas);
     setExpendedDatas(modifiedData);
@@ -94,7 +88,9 @@ function DetailRecords() {
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    const deleteData = expendedDatas.filter((data) => data.id !== recordId);
+    const deleteData = expendedDatas.filter(
+      (data) => data.id !== params.recordsId
+    );
     setExpendedDatas(deleteData);
     localStorage.setItem("data", JSON.stringify(deleteData));
     navigate("/");
@@ -130,7 +126,7 @@ function DetailRecords() {
             id="date"
             ref={date}
             placeholder="YYYY-MM-DD"
-            defaultValue={filteredData.date}
+            defaultValue={data.date}
           />
         </Container>
         <Container direction="column">
@@ -140,7 +136,7 @@ function DetailRecords() {
             id="item"
             ref={item}
             placeholder="지출 항목"
-            defaultValue={filteredData.item}
+            defaultValue={data.item}
           />
         </Container>
         <Container direction="column">
@@ -150,7 +146,7 @@ function DetailRecords() {
             id="amount"
             ref={amount}
             placeholder="지출 금액"
-            defaultValue={filteredData.amount}
+            defaultValue={data.amount}
           />
         </Container>
         <Container direction="column">
@@ -160,7 +156,7 @@ function DetailRecords() {
             id="description"
             ref={description}
             placeholder="지출 내용"
-            defaultValue={filteredData.description}
+            defaultValue={data.description}
           />
         </Container>
         <Container direction="row">
