@@ -100,7 +100,8 @@ function GraphRecords() {
   return (
     <>
       <Font>
-        {selectedMonth}월 총 지출 : {handleTotalCost().toLocaleString()} 원
+        {parseInt(selectedMonth)}월 총 지출 :{" "}
+        {handleTotalCost().toLocaleString()} 원
       </Font>
       <GraphBack>
         {arr.map((data, i) => (
