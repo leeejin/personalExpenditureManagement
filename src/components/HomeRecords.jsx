@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import AddRecord from "./AddRecord";
+import Alert from "./Alert";
 import FooterRecords from "./FooterRecords";
 import GraphRecords from "./GraphRecords";
 import MonthRecords from "./MonthRecords";
@@ -14,6 +15,7 @@ const Section = styled.section`
 function HomeRecords() {
   const [selectedMonth, setSelectedMonth] = useState("01");
   const [expendedDatas, setExpendedDatas] = useState([]);
+  const [warning, setWarning] = useState({ isVisible: false, message: "" });
   const filteredDatas = expendedDatas.filter(
     (data) => data.date.slice(5, 7) === selectedMonth
   );
@@ -32,8 +34,12 @@ function HomeRecords() {
   };
   return (
     <>
+      {warning.isVisible && <Alert message={warning.message} />}
       <Section>
-        <AddRecord handleExpendDatas={handleExpendDatas} />
+        <AddRecord
+          handleExpendDatas={handleExpendDatas}
+          setWarning={setWarning}
+        />
       </Section>
 
       <Section>

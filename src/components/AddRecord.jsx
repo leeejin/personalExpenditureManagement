@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { isDateValid } from "../util/date";
-import Alert from "./Alert";
+
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -23,9 +23,7 @@ const Button = styled.button`
   }
 `;
 
-function AddRecord({ handleExpendDatas }) {
-  const [warning, setWarning] = useState({ isVisible: false, message: "" });
-
+function AddRecord({ handleExpendDatas, setWarning }) {
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -71,7 +69,6 @@ function AddRecord({ handleExpendDatas }) {
   };
   return (
     <Container>
-      {warning.isVisible && <Alert message={warning.message} />}
       <div>
         <label htmlFor="date">날짜</label>
         <input
