@@ -2,6 +2,7 @@ import React, { useContext, useRef } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { FamilyContext, PopupContext } from "../../context/FamilyContext";
+import { isDateValid } from "../../util/date";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -36,17 +37,17 @@ function AddRecord() {
       id: uuidv4(),
       date: date.current.value.trim(),
       item: item.current.value.trim(),
-      amount: parseInt(amount.current.value.trim()),
+      amount:
+        parseInt(amount.current.value.trim()) ||
+        (!amount.current.value.trim() && 0),
       description: description.current.value.trim(),
     };
+
     const error = {
-      date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
-        5,
-        7
-      )}-${formData.date.slice(8)}`,
-      item: !formData.item.trim().length,
+      date: !isDateValid(formData.date),
+      item: !formData.item.trim(),
       amount: formData.amount <= 0,
-      description: !formData.description.trim().length,
+      description: !formData.description.trim(),
     };
     let message = "";
     if (error.date || error.item || error.amount || error.description) {
