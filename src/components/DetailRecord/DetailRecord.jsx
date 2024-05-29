@@ -1,11 +1,12 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { deleteAuth, modifyAuth } from "../../redux/reducers/auth.reducer";
 import { modalClose, modalOpen } from "../../redux/reducers/modal.reducer";
 import { popupClose, popupOpen } from "../../redux/reducers/popup.reducer";
 import GlobalStyle from "../../styles/GlobalStyle";
+import { isDateValid } from "../../util/date";
 import Modal from "../Modal";
 
 const DEL_MESSAGE = "삭제하시겠습니까 ?";
@@ -35,9 +36,10 @@ const Container = styled.div`
 function DetailRecord() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
+  const params = useParams();
   const modal = useSelector((state) => state.modal);
-  const { data, recordId } = location.state;
+  const filteredDatas = useSelector((state) => state.auth.filteredDatas);
+  const data = filteredDatas.filter((data) => data.id === params.recordsId)[0];
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -52,13 +54,10 @@ function DetailRecord() {
       description: description.current.value.trim(),
     };
     const error = {
-      date: !`${formData.date.slice(0, 4)}-${formData.date.slice(
-        5,
-        7
-      )}-${formData.date.slice(8)}`,
-      item: !formData.item.trim().length,
+      date: !isDateValid(formData.date),
+      item: !formData.item.trim(),
       amount: formData.amount <= 0,
-      description: !formData.description.trim().length,
+      description: !formData.description.trim(),
     };
     let message = "";
     if (error.date || error.item || error.amount || error.description) {
@@ -72,18 +71,18 @@ function DetailRecord() {
       return;
     }
 
-    dispatch(modifyAuth({ recordId, formData }));
+    dispatch(modifyAuth({ recordId: params.recordsId, formData }));
     navigate("/");
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    dispatch(deleteAuth(recordId));
+    dispatch(deleteAuth(params.recordsId));
     navigate("/");
   };
   /** 뒤로가기함수 */
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     navigate(-1);
-  };
+  }, []);
 
   const handleConfirm = () => {
     if (modal.message == MODI_MESSAGE) {
@@ -93,9 +92,12 @@ function DetailRecord() {
     }
     dispatch(modalClose());
   };
-  const handleModal = (type) => {
-    dispatch(modalOpen({ isVisible: true, message: type }));
-  };
+  const handleModal = useCallback(
+    (type) => {
+      dispatch(modalOpen({ isVisible: true, message: type }));
+    },
+    [modal.message]
+  );
   return (
     <Section>
       <GlobalStyle isModalOpen={modal.isVisible} />
@@ -108,7 +110,7 @@ function DetailRecord() {
             id="date"
             ref={date}
             placeholder="YYYY-MM-DD"
-            defaultValue={data[0].date}
+            defaultValue={data.date}
           />
         </Container>
         <Container direction="column">
@@ -118,7 +120,7 @@ function DetailRecord() {
             id="item"
             ref={item}
             placeholder="지출 항목"
-            defaultValue={data[0].item}
+            defaultValue={data.item}
           />
         </Container>
         <Container direction="column">
@@ -128,7 +130,7 @@ function DetailRecord() {
             id="amount"
             ref={amount}
             placeholder="지출 금액"
-            defaultValue={data[0].amount}
+            defaultValue={data.amount}
           />
         </Container>
         <Container direction="column">
@@ -138,7 +140,7 @@ function DetailRecord() {
             id="description"
             ref={description}
             placeholder="지출 내용"
-            defaultValue={data[0].description}
+            defaultValue={data.description}
           />
         </Container>
         <Container direction="row">

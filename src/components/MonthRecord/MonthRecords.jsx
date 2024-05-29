@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { changeAuth } from "../../redux/reducers/auth.reducer";
@@ -38,9 +39,12 @@ const MONTHS = [
 function MonthRecords() {
   const selectedMonth = useSelector((state) => state.auth.selectedMonth);
   const dispatch = useDispatch();
-  const handleChangeDate = (month) => {
-    dispatch(changeAuth(month));
-  };
+  const handleChangeDate = useCallback(
+    (month) => {
+      dispatch(changeAuth(month));
+    },
+    [selectedMonth]
+  );
   return (
     <>
       {MONTHS.map((month) => (

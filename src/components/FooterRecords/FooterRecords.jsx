@@ -48,13 +48,7 @@ function FooterRecords() {
     (data) => data.date.slice(5, 7) == selectedMonth
   );
   const handleGoDetail = (recordId) => {
-    const data = filteredDatas.filter((data) => data.id === recordId);
-    navigate(`/records/${recordId}`, {
-      state: {
-        data,
-        recordId,
-      },
-    });
+    navigate(`/records/${recordId}`);
   };
   return (
     <FlexContainer>

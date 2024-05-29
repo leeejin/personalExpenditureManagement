@@ -37,7 +37,7 @@ const authSlice = createSlice({
     },
     deleteAuth: (state, action) => {
       const elimination = [...state.filteredDatas].filter(
-        (data) => data.id != action.payload
+        (data) => data.id !== action.payload
       );
       updatedLocalStorage(elimination);
       state.filteredDatas = elimination;
