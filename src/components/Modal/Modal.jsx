@@ -53,9 +53,6 @@ function Modal({ handleConfirm }) {
   const dispatch = useDispatch();
   const modal = useSelector((state) => state.modal);
 
-  const handleCancel = () => {
-    dispatch(modalClose());
-  };
   return (
     <BackWrap>
       <WhiteWrap>
@@ -71,7 +68,7 @@ function Modal({ handleConfirm }) {
           <Button
             color={"var(--grey-color)"}
             hovercolor={"var(--darkgrey-color)"}
-            onClick={handleCancel}
+            onClick={() => dispatch(modalClose())}
           >
             취소
           </Button>

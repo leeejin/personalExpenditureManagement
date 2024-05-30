@@ -18,13 +18,13 @@ const authSlice = createSlice({
       state.selectedMonth = action.payload;
     },
     addAuth: (state, action) => {
-      const add = [...state.filteredDatas, action.payload];
-      updatedLocalStorage(add);
+      const addedData = [...state.filteredDatas, action.payload];
+      updatedLocalStorage(addedData);
       state.selectedMonth = action.payload.date.slice(5, 7);
-      state.filteredDatas = add;
+      state.filteredDatas = addedData;
     },
     modifyAuth: (state, action) => {
-      const modify = [...state.filteredDatas].map(
+      const modifiedData = [...state.filteredDatas].map(
         (data) => {
           if (data.id === action.payload.recordId)
             return { ...data, ...action.payload.formData };
@@ -32,15 +32,15 @@ const authSlice = createSlice({
         },
         [...state.filteredDatas]
       );
-      updatedLocalStorage(modify);
-      state.filteredDatas = modify;
+      updatedLocalStorage(modifiedData);
+      state.filteredDatas = modifiedData;
     },
     deleteAuth: (state, action) => {
-      const elimination = [...state.filteredDatas].filter(
+      const eliminatedData = [...state.filteredDatas].filter(
         (data) => data.id !== action.payload
       );
-      updatedLocalStorage(elimination);
-      state.filteredDatas = elimination;
+      updatedLocalStorage(eliminatedData);
+      state.filteredDatas = eliminatedData;
     },
   },
 });
