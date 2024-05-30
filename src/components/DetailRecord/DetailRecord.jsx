@@ -32,8 +32,8 @@ const MODI_MESSAGE = "수정하시겠습니까 ?";
 function DetailRecords() {
   const localData = JSON.parse(localStorage.getItem("data"));
   const navigate = useNavigate();
-  const params = useParams();
-  const data = localData.filter((data) => data.id === params.recordId)[0];
+  const { recordId } = useParams();
+  const data = localData.filter((data) => data.id === recordId)[0];
   const [warning, setWarning] = useState({ isVisible: false, message: "" });
   const [modal, setModal] = useState({
     isVisible: false,
@@ -44,6 +44,20 @@ function DetailRecords() {
   const amount = useRef(0);
   const description = useRef("");
 
+  const handleChangeModal = (visible, message) => {
+    setModal((prev) => ({
+      ...prev,
+      isVisible: visible,
+      message: message,
+    }));
+  };
+  const handleChangeWarning = (visible, message) => {
+    setWarning((prev) => ({
+      ...prev,
+      isVisible: visible,
+      message: message,
+    }));
+  };
   /** 수정함수 */
   const handleModify = () => {
     //수정할 데이터
@@ -69,24 +83,12 @@ function DetailRecords() {
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
 
-      setWarning((prev) => ({
-        ...prev,
-        isVisible: true,
-        message,
-      }));
-      setTimeout(
-        () =>
-          setWarning((prev) => ({
-            ...prev,
-            isVisible: false,
-            message: "",
-          })),
-        1500
-      );
+      handleChangeWarning(true, message);
+      setTimeout(() => handleChangeWarning(false, ""), 1500);
       return;
     }
     const modifiedData = localData.map((data) => {
-      if (data.id === params.recordId) return { ...data, ...formData };
+      if (data.id === recordId) return { ...data, ...formData };
       return data;
     }, localData);
     localStorage.setItem("data", JSON.stringify(modifiedData));
@@ -94,7 +96,7 @@ function DetailRecords() {
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    const deleteData = localData.filter((data) => data.id !== params.recordId);
+    const deleteData = localData.filter((data) => data.id !== recordId);
     localStorage.setItem("data", JSON.stringify(deleteData));
     navigate("/");
   };
@@ -104,11 +106,7 @@ function DetailRecords() {
   }, []);
 
   const handleCancel = useCallback(() => {
-    setModal((prev) => ({
-      ...prev,
-      isVisible: false,
-      message: "",
-    }));
+    handleChangeModal(false, "");
   }, []);
   const handleConfirm = () => {
     if (modal.message == MODI_MESSAGE) {
@@ -116,20 +114,10 @@ function DetailRecords() {
     } else if (modal.message == DEL_MESSAGE) {
       handleDelete();
     }
-    setModal((prev) => ({
-      ...prev,
-      isVisible: false,
-      message: "",
-    }));
+    handleChangeModal(false, "");
   };
   const handleModal = useCallback(
-    (type) => {
-      setModal((prev) => ({
-        ...prev,
-        isVisible: true,
-        message: type,
-      }));
-    },
+    (type) => handleChangeModal(true, type),
     [modal.message]
   );
   return (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import AddRecord from "../AddRecord";
 import Alert from "../Alert";
@@ -23,14 +23,24 @@ function HomeRecords() {
     const data = JSON.parse(localStorage.getItem("data")) || [];
     setExpendedDatas(data);
   }, []);
-  const handleChangeDate = (month) => {
-    setSelectedMonth(month);
-  };
+  const handleChangeDate = useCallback(
+    (month) => {
+      setSelectedMonth(month);
+    },
+    [selectedMonth]
+  );
   const handleExpendDatas = (formData) => {
     setExpendedDatas((prev) => [...prev, formData]);
     setSelectedMonth(`${formData.date.slice(5, 7)}`);
     const newData = [...expendedDatas, formData];
     localStorage.setItem("data", JSON.stringify(newData));
+  };
+  const handleChangeWarning = (visible, message) => {
+    setWarning((prev) => ({
+      ...prev,
+      isVisible: visible,
+      message: message,
+    }));
   };
   return (
     <>
@@ -38,7 +48,7 @@ function HomeRecords() {
       <Section>
         <AddRecord
           handleExpendDatas={handleExpendDatas}
-          setWarning={setWarning}
+          handleChangeWarning={handleChangeWarning}
         />
       </Section>
 

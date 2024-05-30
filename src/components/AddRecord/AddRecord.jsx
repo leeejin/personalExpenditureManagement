@@ -23,7 +23,7 @@ const Button = styled.button`
   }
 `;
 
-function AddRecord({ handleExpendDatas, setWarning }) {
+function AddRecord({ handleExpendDatas, handleChangeWarning }) {
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -52,20 +52,8 @@ function AddRecord({ handleExpendDatas, setWarning }) {
       else if (error.item) message = "항목을 입력해주세요";
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
-      setWarning((prev) => ({
-        ...prev,
-        isVisible: true,
-        message,
-      }));
-      setTimeout(
-        () =>
-          setWarning((prev) => ({
-            ...prev,
-            isVisible: false,
-            message: "",
-          })),
-        1500
-      );
+      handleChangeWarning(true, message);
+      setTimeout(() => handleChangeWarning(false, ""), 1500);
       return;
     }
     handleExpendDatas(formData);

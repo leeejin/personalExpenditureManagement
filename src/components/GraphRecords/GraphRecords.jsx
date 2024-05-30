@@ -47,51 +47,44 @@ const colors = [
 ];
 
 const summarizeExpenses = (expenses) => {
-  const summary = {};
+  const summary = expenses.reduce((acc, { item, amount }) => {
+    acc[item] = (acc[item] || 0) + amount;
+    return acc;
+  }, {});
 
-  for (const expense of expenses) {
-    const { item, amount } = expense;
+  const sortedSummary = Object.entries(summary)
+    .map(([item, amount]) => ({ [item]: amount }))
+    .sort((a, b) => {
+      return Object.values(b) - Object.values(a);
+    });
 
-    if (summary[item]) summary[item] += amount;
-    else summary[item] = amount;
-  }
+  const topItems = sortedSummary.slice(0, 4);
+  const remainingItems = sortedSummary.slice(4).reduce(
+    (acc, item) => {
+      acc.기타.push(item);
+      return acc;
+    },
+    { 기타: [] }
+  );
 
-  return Object.entries(summary).map(([item, amount]) => ({
-    [item]: amount,
-  }));
+  return sortedSummary.length > 4
+    ? [...topItems, remainingItems]
+    : sortedSummary;
 };
 function GraphRecords({ selectedMonth, expendedDatas }) {
-  const categoryDatas = summarizeExpenses(expendedDatas).sort((a, b) => {
-    return Object.values(b) - Object.values(a);
-  });
-  let arr = [];
-  for (let i = 0; i < categoryDatas.length; i++) {
-    if (i < 4) {
-      arr.push(categoryDatas[i]);
-    } else {
-      if (!arr.some((item) => item.hasOwnProperty("기타"))) {
-        arr.push({ 기타: [] });
-      }
-      arr
-        .find((item) => item.hasOwnProperty("기타"))
-        .기타.push(categoryDatas[i]);
-    }
-  }
+  const arr = summarizeExpenses(expendedDatas);
   const handleTotalCost = () => {
     const costArr = expendedDatas.map((data) => data.amount);
     return costArr.reduce((prev, cur) => (prev += cur), 0);
   };
 
   const handleAmountCalculate = (data, i) => {
-    let total = 0;
-    if (i < 4) return Object.values(data);
-    else {
-      const etcData = Object.values(data)[0];
-      for (let item of etcData) {
-        total += Object.values(item)[0];
-      }
-      return total;
-    }
+    return i < 4
+      ? Object.values(data)
+      : Object.values(data)[0].reduce(
+          (total, item) => total + Object.values(item)[0],
+          0
+        );
   };
   return (
     <>
