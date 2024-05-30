@@ -6,9 +6,9 @@ const initialState = {
   deleteRecord: () => {},
 };
 
-export const FamilyContext = createContext(initialState); //데이터관리
+export const RecordContext = createContext(initialState); //데이터관리
 
-export const useRecord = () => useContext(FamilyContext);
+export const useRecord = () => useContext(RecordContext);
 
 export function RecordProvider({ children }) {
   const data = JSON.parse(localStorage.getItem("data")) || [];
@@ -47,6 +47,6 @@ export function RecordProvider({ children }) {
     },
   };
   return (
-    <FamilyContext.Provider value={value}>{children}</FamilyContext.Provider>
+    <RecordContext.Provider value={value}>{children}</RecordContext.Provider>
   );
 }

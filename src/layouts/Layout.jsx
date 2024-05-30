@@ -12,7 +12,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 25px;
 `;
-function DefaultLayout() {
+function Layout() {
   return (
     <ModalProvider>
       <GlobalStyle />
@@ -22,4 +22,4 @@ function DefaultLayout() {
     </ModalProvider>
   );
 }
-export default DefaultLayout;
+export default Layout;

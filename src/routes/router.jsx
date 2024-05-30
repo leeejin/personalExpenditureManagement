@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import DetailRecords from "../components/DetailRecord/DetailRecord";
 import HomeRecords from "../components/HomeRecords/HomeRecords";
-import DefaultLayout from "../layouts/DefaultLayout";
+import DefaultLayout from "../layouts/Layout";
 const router = createBrowserRouter([
   {
     element: <DefaultLayout />,
