@@ -3,23 +3,21 @@ const BackWrap = styled.div`
   position: fixed;
   top: 0px;
   left: 0px;
+  right: 0px;
+  bottom: 0px;
   background-color: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const WhiteWrap = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
   width: 400px;
   height: 200px;
   background-color: var(--white-color);
-  border-radius: 20px;
+  border-radius: 15px;
   border: none;
 `;
 const Button = styled.button`
