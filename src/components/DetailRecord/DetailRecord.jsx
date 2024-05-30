@@ -1,10 +1,11 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useRecord } from "../../contexts/data.context";
-import { useModal } from "../../contexts/modal.context";
 import { useWarning } from "../../contexts/warning.context";
+import GlobalStyle from "../../styles/GlobalStyle";
 import { isDateValid } from "../../util/date";
+import Modal from "../Modal";
 const Button = styled.button`
   background-color: ${(props) => props.color};
   color: var(--white-color);
@@ -30,7 +31,6 @@ const DEL_MESSAGE = "삭제하시겠습니까 ?";
 const MODI_MESSAGE = "수정하시겠습니까 ?";
 
 function DetailRecords() {
-  const modal = useModal();
   const warning = useWarning();
   const record = useRecord();
   const navigate = useNavigate();
@@ -40,6 +40,7 @@ function DetailRecords() {
   const item = useRef("");
   const amount = useRef(0);
   const description = useRef("");
+  const [modalOptions, setModalOptions] = useState(null);
 
   /** 수정함수 */
   const handleModify = () => {
@@ -71,85 +72,106 @@ function DetailRecords() {
       setTimeout(() => warning.popupClose(), 1500);
       return;
     }
-    modal.modalOpen({ message: MODI_MESSAGE, formData });
+    record.modifyRecord(recordsId, formData);
+    navigate("/");
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    modal.modalOpen({ message: DEL_MESSAGE, formData: { id: recordsId } });
+    record.deleteRecord(recordsId);
+    navigate("/");
   };
   /** 뒤로가기함수 */
   const handleBack = useCallback(() => {
     navigate(-1);
   }, []);
 
+  const handleConfirm = () => {
+    if (modalOptions.message == MODI_MESSAGE) handleModify();
+    else if (modalOptions.message == DEL_MESSAGE) handleDelete();
+
+    setModalOptions(null);
+  };
+  const handleCancel = () => {
+    setModalOptions(null);
+  };
   return (
-    <Section>
-      <Container direction="column">
+    <>
+      <GlobalStyle isModalOpen={modalOptions} />
+      {modalOptions && (
+        <Modal
+          message={modalOptions.message}
+          handleConfirm={handleConfirm}
+          handleCancel={handleCancel}
+        />
+      )}
+      <Section>
         <Container direction="column">
-          <label htmlFor="date">날짜</label>
-          <input
-            type="text"
-            id="date"
-            ref={date}
-            placeholder="YYYY-MM-DD"
-            defaultValue={data.date}
-          />
+          <Container direction="column">
+            <label htmlFor="date">날짜</label>
+            <input
+              type="text"
+              id="date"
+              ref={date}
+              placeholder="YYYY-MM-DD"
+              defaultValue={data.date}
+            />
+          </Container>
+          <Container direction="column">
+            <label htmlFor="item">항목</label>
+            <input
+              type="text"
+              id="item"
+              ref={item}
+              placeholder="지출 항목"
+              defaultValue={data.item}
+            />
+          </Container>
+          <Container direction="column">
+            <label htmlFor="amount">금액</label>
+            <input
+              type="number"
+              id="amount"
+              ref={amount}
+              placeholder="지출 금액"
+              defaultValue={data.amount}
+            />
+          </Container>
+          <Container direction="column">
+            <label htmlFor="description">내용</label>
+            <input
+              type="text"
+              id="description"
+              ref={description}
+              placeholder="지출 내용"
+              defaultValue={data.description}
+            />
+          </Container>
+          <Container direction="row">
+            <Button
+              color="var(--blue-color)"
+              hovercolor="var(--darkblue-color)"
+              onClick={() => setModalOptions({ message: MODI_MESSAGE })}
+            >
+              수정
+            </Button>
+            <Button
+              color=" var(--red-color)"
+              hovercolor="var(--darkred-color)"
+              onClick={() => setModalOptions({ message: DEL_MESSAGE })}
+            >
+              삭제
+            </Button>
+            <Button
+              color="var(--grey-color)"
+              hovercolor="var(--darkgrey-color)"
+              onClick={handleBack}
+            >
+              뒤로가기
+            </Button>
+          </Container>
         </Container>
-        <Container direction="column">
-          <label htmlFor="item">항목</label>
-          <input
-            type="text"
-            id="item"
-            ref={item}
-            placeholder="지출 항목"
-            defaultValue={data.item}
-          />
-        </Container>
-        <Container direction="column">
-          <label htmlFor="amount">금액</label>
-          <input
-            type="number"
-            id="amount"
-            ref={amount}
-            placeholder="지출 금액"
-            defaultValue={data.amount}
-          />
-        </Container>
-        <Container direction="column">
-          <label htmlFor="description">내용</label>
-          <input
-            type="text"
-            id="description"
-            ref={description}
-            placeholder="지출 내용"
-            defaultValue={data.description}
-          />
-        </Container>
-        <Container direction="row">
-          <Button
-            color="var(--blue-color)"
-            hovercolor="var(--darkblue-color)"
-            onClick={handleModify}
-          >
-            수정
-          </Button>
-          <Button
-            color=" var(--red-color)"
-            hovercolor="var(--darkred-color)"
-            onClick={handleDelete}
-          >
-            삭제
-          </Button>
-          <Button
-            color="var(--grey-color)"
-            hovercolor="var(--darkgrey-color)"
-            onClick={handleBack}
-          >
-            뒤로가기
-          </Button>
-        </Container>
-      </Container>
-    </Section>
+      </Section>
+    </>
   );
 }
 

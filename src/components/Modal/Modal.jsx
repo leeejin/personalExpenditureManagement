@@ -1,6 +1,4 @@
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useModal } from "../../contexts/modal.context";
 const BackWrap = styled.div`
   position: fixed;
   top: 0px;
@@ -49,14 +47,7 @@ const Message = styled.h1`
   font-weight: bold;
   margin: auto;
 `;
-function Modal({ message }) {
-  const navigate = useNavigate();
-  const modal = useModal();
-
-  const handleBeforeCheck = () => {
-    modal.modalConfirm({ message: message });
-    navigate("/");
-  };
+function Modal({ message, handleConfirm, handleCancel }) {
   return (
     <BackWrap>
       <WhiteWrap>
@@ -65,14 +56,14 @@ function Modal({ message }) {
           <Button
             color={"var(--blue-color)"}
             hovercolor={"var(--darkblue-color)"}
-            onClick={() => handleBeforeCheck()}
+            onClick={handleConfirm}
           >
             확인
           </Button>
           <Button
             color={"var(--grey-color)"}
             hovercolor={"var(--darkgrey-color)"}
-            onClick={() => modal.modalClose()}
+            onClick={handleCancel}
           >
             취소
           </Button>

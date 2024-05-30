@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { ModalProvider } from "../contexts/modal.context";
 import GlobalStyle from "../styles/GlobalStyle";
 import "../styles/color.css";
 
@@ -14,12 +13,12 @@ const Container = styled.div`
 `;
 function Layout() {
   return (
-    <ModalProvider>
+    <>
       <GlobalStyle />
       <Container>
         <Outlet />
       </Container>
-    </ModalProvider>
+    </>
   );
 }
 export default Layout;
