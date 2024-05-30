@@ -10,7 +10,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 25px;
 `;
-function Home({ children }) {
+function Layout({ children }) {
   return (
     <>
       <GlobalStyle />
@@ -18,4 +18,4 @@ function Home({ children }) {
     </>
   );
 }
-export default Home;
+export default Layout;
