@@ -1,6 +1,4 @@
-import { useContext } from "react";
 import styled from "styled-components";
-import { PopupContext } from "../../context/FamilyContext";
 import warningIcon from "../../styles/images/warning-icon.png";
 
 const AlertWrap = styled.div`
@@ -33,12 +31,11 @@ const Img = styled.img`
   margin: 0 auto;
 `;
 /** 알림창 */
-const Alert = () => {
-  const { warning } = useContext(PopupContext);
+const Alert = ({ message }) => {
   return (
     <AlertWrap>
       <Img src={warningIcon} />
-      <h3>{warning.message}</h3>
+      <h3>{message}</h3>
     </AlertWrap>
   );
 };

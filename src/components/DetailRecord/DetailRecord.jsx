@@ -1,10 +1,10 @@
-import { useCallback, useContext, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { FamilyContext, PopupContext } from "../../context/FamilyContext";
-import GlobalStyle from "../../styles/GlobalStyle";
+import { useRecord } from "../../contexts/data.context";
+import { useModal } from "../../contexts/modal.context";
+import { useWarning } from "../../contexts/warning.context";
 import { isDateValid } from "../../util/date";
-import Modal from "../Modal";
 const Button = styled.button`
   background-color: ${(props) => props.color};
   color: var(--white-color);
@@ -30,11 +30,12 @@ const DEL_MESSAGE = "삭제하시겠습니까 ?";
 const MODI_MESSAGE = "수정하시겠습니까 ?";
 
 function DetailRecords() {
-  const { expendedDatas, setExpendedDatas } = useContext(FamilyContext);
-  const { setWarning, modal, setModal, handleModal } = useContext(PopupContext);
+  const modal = useModal();
+  const warning = useWarning();
+  const record = useRecord();
   const navigate = useNavigate();
-  const params = useParams();
-  const data = expendedDatas.filter((data) => data.id == params.recordsId)[0];
+  const { recordsId } = useParams();
+  const data = record.recordOptions.filter((data) => data.id === recordsId)[0];
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -44,6 +45,7 @@ function DetailRecords() {
   const handleModify = () => {
     //수정할 데이터
     const formData = {
+      id: data.id,
       date: date.current.value.trim(),
       item: item.current.value.trim(),
       amount:
@@ -65,62 +67,23 @@ function DetailRecords() {
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
 
-      setWarning((prev) => ({
-        ...prev,
-        isVisible: true,
-        message,
-      }));
-      setTimeout(
-        () =>
-          setWarning((prev) => ({
-            ...prev,
-            isVisible: false,
-            message: "",
-          })),
-        1500
-      );
+      warning.popupOpen({ message: message });
+      setTimeout(() => warning.popupClose(), 1500);
       return;
     }
-    const modifiedData = expendedDatas.map((data) => {
-      if (data.id === params.recordsId) return { ...data, ...formData };
-      return data;
-    }, expendedDatas);
-    setExpendedDatas(modifiedData);
-    localStorage.setItem("data", JSON.stringify(modifiedData));
-    navigate("/");
+    modal.modalOpen({ message: MODI_MESSAGE, formData });
   };
   /** 삭제함수 */
   const handleDelete = () => {
-    const deleteData = expendedDatas.filter(
-      (data) => data.id !== params.recordsId
-    );
-    setExpendedDatas(deleteData);
-    localStorage.setItem("data", JSON.stringify(deleteData));
-    navigate("/");
+    modal.modalOpen({ message: DEL_MESSAGE, formData: { id: recordsId } });
   };
   /** 뒤로가기함수 */
   const handleBack = useCallback(() => {
     navigate(-1);
   }, []);
 
-  const handleConfirm = () => {
-    if (modal.message == MODI_MESSAGE) {
-      handleModify();
-    } else if (modal.message == DEL_MESSAGE) {
-      handleDelete();
-    }
-    setModal((prev) => ({
-      ...prev,
-      isVisible: false,
-      message: "",
-    }));
-  };
-
   return (
     <Section>
-      <GlobalStyle isModalOpen={modal.isVisible} />
-      {modal.isVisible && <Modal handleConfirm={handleConfirm} />}
-
       <Container direction="column">
         <Container direction="column">
           <label htmlFor="date">날짜</label>
@@ -166,14 +129,14 @@ function DetailRecords() {
           <Button
             color="var(--blue-color)"
             hovercolor="var(--darkblue-color)"
-            onClick={() => handleModal(MODI_MESSAGE)}
+            onClick={handleModify}
           >
             수정
           </Button>
           <Button
             color=" var(--red-color)"
             hovercolor="var(--darkred-color)"
-            onClick={() => handleModal(DEL_MESSAGE)}
+            onClick={handleDelete}
           >
             삭제
           </Button>

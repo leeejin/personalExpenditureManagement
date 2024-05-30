@@ -1,7 +1,8 @@
-import React, { useContext, useRef } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
-import { FamilyContext, PopupContext } from "../../context/FamilyContext";
+import { useRecord } from "../../contexts/data.context";
+import { useWarning } from "../../contexts/warning.context";
 import { isDateValid } from "../../util/date";
 const Container = styled.div`
   display: flex;
@@ -24,9 +25,8 @@ const Button = styled.button`
 `;
 
 function AddRecord() {
-  const { handleExpendDatas } = useContext(FamilyContext);
-  const { setWarning } = useContext(PopupContext);
-
+  const record = useRecord();
+  const warning = useWarning();
   const date = useRef("");
   const item = useRef("");
   const amount = useRef(0);
@@ -50,27 +50,18 @@ function AddRecord() {
       description: !formData.description.trim(),
     };
     let message = "";
+
     if (error.date || error.item || error.amount || error.description) {
       if (error.date) message = "날짜형식이 잘못되었습니다";
       else if (error.item) message = "항목을 입력해주세요";
       else if (error.amount) message = "금액은 양수로 입력해주세요";
       else if (error.description) message = "내용을 입력해주세요";
 
-      setWarning((prev) => ({
-        ...prev,
-        isVisible: true,
-        message,
-      }));
-      setTimeout(() => {
-        setWarning((prev) => ({
-          ...prev,
-          isVisible: false,
-          message,
-        }));
-      }, 1500);
+      warning.popupOpen({ message: message });
+      setTimeout(() => warning.popupClose(), 1500);
       return;
     }
-    handleExpendDatas(formData);
+    record.addRecord(formData);
   };
   return (
     <Container>

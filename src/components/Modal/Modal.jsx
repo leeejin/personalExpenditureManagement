@@ -1,22 +1,21 @@
-import { useCallback, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { PopupContext } from "../../context/FamilyContext";
+import { useModal } from "../../contexts/modal.context";
 const BackWrap = styled.div`
   position: fixed;
   top: 0px;
   left: 0px;
+  right: 0px;
+  bottom: 0px;
   background-color: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const WhiteWrap = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 
   width: 400px;
   height: 200px;
@@ -50,31 +49,30 @@ const Message = styled.h1`
   font-weight: bold;
   margin: auto;
 `;
-function Modal({ handleConfirm }) {
-  const { setModal, modal } = useContext(PopupContext);
-  const handleCancel = useCallback(() => {
-    setModal((prev) => ({
-      ...prev,
-      isVisible: false,
-      message: "",
-    }));
-  }, []);
+function Modal({ message }) {
+  const navigate = useNavigate();
+  const modal = useModal();
+
+  const handleBeforeCheck = () => {
+    modal.modalConfirm({ message: message });
+    navigate("/");
+  };
   return (
     <BackWrap>
       <WhiteWrap>
-        <Message>{modal.message}</Message>
+        <Message>{message}</Message>
         <Footer>
           <Button
             color={"var(--blue-color)"}
             hovercolor={"var(--darkblue-color)"}
-            onClick={handleConfirm}
+            onClick={() => handleBeforeCheck()}
           >
             확인
           </Button>
           <Button
             color={"var(--grey-color)"}
             hovercolor={"var(--darkgrey-color)"}
-            onClick={handleCancel}
+            onClick={() => modal.modalClose()}
           >
             취소
           </Button>

@@ -1,6 +1,5 @@
-import { useContext } from "react";
 import styled from "styled-components";
-import { FamilyContext } from "../../context/FamilyContext";
+import { useRecord } from "../../contexts/data.context";
 
 const FontSpan = styled.span`
   font-size: 18px;
@@ -36,14 +35,13 @@ const MONTHS = [
   "12",
 ];
 function MonthRecords() {
-  const { handleChangeDate, selectedMonth } = useContext(FamilyContext);
-
+  const { changeMonth, selectedMonth } = useRecord();
   return (
     <>
       {MONTHS.map((month) => (
         <DateButton
           key={month}
-          onClick={() => handleChangeDate(month)}
+          onClick={() => changeMonth(month)}
           selected={selectedMonth === month}
         >
           <FontSpan>{parseInt(month)}월</FontSpan>

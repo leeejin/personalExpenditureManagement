@@ -1,7 +1,6 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { FamilyContext } from "../../context/FamilyContext";
+import { useRecord } from "../../contexts/data.context";
 const FlexContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -44,15 +43,15 @@ const Font = styled.span`
 
 function FooterRecords() {
   const navigate = useNavigate();
-  const { filteredDatas } = useContext(FamilyContext);
+  const { recordOptions } = useRecord();
 
   const handleGoDetail = (recordId) => {
     navigate(`/records/${recordId}`);
   };
   return (
     <FlexContainer>
-      {filteredDatas.length ? (
-        filteredDatas.map((data) => (
+      {recordOptions.length ? (
+        recordOptions.map((data) => (
           <Card key={data.id} onClick={() => handleGoDetail(data.id)}>
             <CardItem>
               <Font size={"14px"} color={"var(--grey-color)"} weight={"100"}>
